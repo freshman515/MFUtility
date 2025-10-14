@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFUtility", "MFUtility\MFUtility.csproj", "{BB84DDD8-E044-46C0-983B-61856E2B9E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test1", "Test1\Test1.csproj", "{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB84DDD8-E044-46C0-983B-61856E2B9E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB84DDD8-E044-46C0-983B-61856E2B9E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB84DDD8-E044-46C0-983B-61856E2B9E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB84DDD8-E044-46C0-983B-61856E2B9E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
