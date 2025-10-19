@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ReportView.Extension;
+namespace MFUtility.Extensions;
 
 /// <summary>
 /// IoC 容器批量注册 View / ViewModel / Service 的辅助扩展
@@ -169,4 +167,185 @@ public static class ServiceProviderExtensions {
 	}
 
 	#endregion
+
+	#region === Quick Register (显式批量注册) ===
+
+	/// <summary>
+	/// 批量注册多个类型为单例（Singleton）
+	/// </summary>
+	/// <param name="services">IServiceCollection</param>
+	/// <param name="types">要注册的类型集合</param>
+	public static IServiceCollection AddSingletons(this IServiceCollection services, params Type[] types) {
+		foreach (var type in types) {
+			if (type == null) continue;
+
+			// 若类型有接口则绑定接口，否则绑定自身
+			var interfaces = type.GetInterfaces();
+			if (interfaces.Length > 0) {
+				foreach (var itf in interfaces)
+					services.AddSingleton(itf, type);
+			} else {
+				services.AddSingleton(type);
+			}
+		}
+
+		return services;
+	}
+
+	/// <summary>
+	/// 批量注册多个类型为作用域（Scoped）
+	/// </summary>
+	public static IServiceCollection AddScopes(this IServiceCollection services, params Type[] types) {
+		foreach (var type in types) {
+			if (type == null) continue;
+
+			var interfaces = type.GetInterfaces();
+			if (interfaces.Length > 0) {
+				foreach (var itf in interfaces)
+					services.AddScoped(itf, type);
+			} else {
+				services.AddScoped(type);
+			}
+		}
+
+		return services;
+	}
+
+	/// <summary>
+	/// 批量注册多个类型为瞬态（Transient）
+	/// </summary>
+	public static IServiceCollection AddTransients(this IServiceCollection services, params Type[] types) {
+		foreach (var type in types) {
+			if (type == null) continue;
+
+			var interfaces = type.GetInterfaces();
+			if (interfaces.Length > 0) {
+				foreach (var itf in interfaces)
+					services.AddTransient(itf, type);
+			} else {
+				services.AddTransient(type);
+			}
+		}
+
+		return services;
+	}
+
+	#endregion
+
+	public static bool IsRegistered<T>(this IServiceCollection services) {
+		return services.Any(s => s.ServiceType == typeof(T));
+	}
+
+	public static T? TryGetService<T>(this IServiceProvider sp) where T : class {
+		try {
+			return sp.GetService(typeof(T)) as T;
+		} catch {
+			return null;
+		}
+	}
+
+	public static TWindow CreateWindow<TWindow>(this IServiceProvider sp)
+		where TWindow : Window, new() {
+		var window = new TWindow();
+		var vmType = ResolveViewModelType(typeof(TWindow));
+		if (vmType != null)
+			window.DataContext = sp.GetService(vmType) ?? ActivatorUtilities.CreateInstance(sp, vmType);
+		return window;
+	}
+
+	public static object CreateInstance(this IServiceProvider sp, Type type) {
+		return ActivatorUtilities.CreateInstance(sp, type);
+	}
+
+	public static IServiceCollection AddDerivedFrom<TBase>(
+		this IServiceCollection services,
+		Assembly assembly,
+		ServiceLifetime lifetime = ServiceLifetime.Transient) {
+		var baseType = typeof(TBase);
+		var derivedTypes = assembly.GetTypes()
+			.Where(t => baseType.IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+
+		foreach (var type in derivedTypes)
+			services.Add(new ServiceDescriptor(type, type, lifetime));
+
+		return services;
+	}
+
+	public static IServiceProvider Build(this IServiceCollection services, bool log = false) {
+		if (log)
+			Console.WriteLine($"🔧 Building ServiceProvider ({services.Count} services)...");
+		return services.BuildServiceProvider();
+	}
+
+	public static IServiceCollection AddGenericImplementations(
+		this IServiceCollection services,
+		Assembly assembly,
+		Type genericInterface,
+		ServiceLifetime lifetime = ServiceLifetime.Transient) {
+		var impls = assembly.GetTypes()
+			.Where(t => t.IsClass && !t.IsAbstract)
+			.Select(t => new {
+				Type = t,
+				Interfaces = t.GetInterfaces()
+					.Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == genericInterface)
+					.ToList()
+			})
+			.Where(x => x.Interfaces.Count > 0);
+
+		foreach (var impl in impls) {
+			foreach (var iface in impl.Interfaces)
+				services.Add(new ServiceDescriptor(iface, impl.Type, lifetime));
+		}
+
+		return services;
+	}
+
+	public static IServiceCollection AddByConvention(this IServiceCollection services, Assembly assembly) {
+		var types = assembly.GetTypes()
+			.Where(t => t.IsClass && !t.IsAbstract)
+			.ToList();
+
+		foreach (var impl in types) {
+			var itf = impl.GetInterfaces()
+				.FirstOrDefault(i => i.Name == $"I{impl.Name}");
+			if (itf != null)
+				services.AddTransient(itf, impl);
+		}
+
+		return services;
+	}
+
+	public static IServiceCollection AddFactory<TService>(
+		this IServiceCollection services,
+		Func<IServiceProvider, TService> factory,
+		ServiceLifetime lifetime = ServiceLifetime.Singleton)
+		where TService : class {
+		services.Add(new ServiceDescriptor(typeof(TService), sp => factory(sp)!, lifetime));
+		return services;
+	}
+
+	public static IServiceCollection AddNamed<TService>(
+		this IServiceCollection services,
+		string name,
+		Func<IServiceProvider, TService> factory)
+		where TService : class {
+		services.AddSingleton<NamedService<TService>>(new NamedService<TService>(name, factory));
+		return services;
+	}
+
+	public static TService? GetNamed<TService>(this IServiceProvider sp, string name)
+		where TService : class {
+		var all = sp.GetServices<NamedService<TService>>();
+		return all.FirstOrDefault(n => n.Name == name)?.Factory(sp);
+	}
+
+	public class NamedService<T> {
+		public string Name { get; }
+		public Func<IServiceProvider, T> Factory { get; }
+
+		public NamedService(string name, Func<IServiceProvider, T> factory) {
+			Name = name;
+			Factory = factory;
+		}
+	}
 }

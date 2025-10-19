@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace MFUtility.Helpers
+﻿namespace MFUtility.UI
 {
     public static class MarginHelper
     {

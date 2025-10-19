@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace MFUtility.Helpers;
+﻿namespace MFUtility.UI;
 
 public class CornerHelper {
 	public static CornerRadius GetCornerRadius(DependencyObject obj)

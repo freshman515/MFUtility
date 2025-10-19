@@ -1,7 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.UI;
 
 public class KeyBindingHelper {
 	

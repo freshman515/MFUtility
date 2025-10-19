@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.UI;
 
 /// <summary>
 /// ClickHelper v3 - 为任意控件添加完整交互命令绑定：

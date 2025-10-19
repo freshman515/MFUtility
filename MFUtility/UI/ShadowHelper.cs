@@ -1,8 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Media.Effects;
 
-namespace MFUtility.Helpers
+namespace MFUtility.UI
 {
     public static class ShadowHelper
     {

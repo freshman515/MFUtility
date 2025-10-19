@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFUtility", "MFUtility\MFUt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test1", "Test1\Test1.csproj", "{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{C5965DC2-8640-4299-956A-87CE85495F26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetPublisher", "NugetPublisher\NugetPublisher.csproj", "{26D47FC3-2B98-46F2-B8FB-3810E44AE82B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResxAutoTranslator", "ResxAutoTranslator\ResxAutoTranslator.csproj", "{B7B092E1-287A-4570-ADA2-C19A16BD1EDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +24,17 @@ Global
 		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F29A8A80-D8C5-4FE1-B39E-6325FC11F8D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7B092E1-287A-4570-ADA2-C19A16BD1EDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7B092E1-287A-4570-ADA2-C19A16BD1EDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7B092E1-287A-4570-ADA2-C19A16BD1EDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7B092E1-287A-4570-ADA2-C19A16BD1EDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B} = {C5965DC2-8640-4299-956A-87CE85495F26}
+		{B7B092E1-287A-4570-ADA2-C19A16BD1EDB} = {C5965DC2-8640-4299-956A-87CE85495F26}
 	EndGlobalSection
 EndGlobal

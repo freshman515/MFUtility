@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace MFUtility.Extensions;
 
@@ -23,4 +24,14 @@ public static class DateTimeExtensions
 
     public static DateTime EndOfWeek(this DateTime dt)
         => dt.StartOfWeek().AddDays(6);
+    
+         /// <summary>
+        /// 格式化时间部分
+        /// </summary>
+        private static string FormatTime(this DateTime dt, bool includeSeconds)
+        {
+            return includeSeconds
+                ? dt.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                : dt.ToString("HH:mm", CultureInfo.InvariantCulture);
+        }
 }

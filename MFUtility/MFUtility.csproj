@@ -1,26 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
   <PropertyGroup>
     <!-- 多目标框架 -->
     <TargetFrameworks>
-      net470;
-      net471;
-      net472;
-      net48;
-      net481;
-      net8.0-windows
-    </TargetFrameworks>
-
+            net470;
+            net471;
+            net472;
+            net48;
+            net481;
+            net8.0-windows
+        </TargetFrameworks>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.0.20</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
@@ -28,37 +26,29 @@
     <PackageTags>wpf helper utility attach ui</PackageTags>
     <RepositoryUrl>https://github.com/MfStudio</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-
     <!-- 👇 防止 NU5026 错误 -->
     <ContinueOnError>WarnAndContinue</ContinueOnError>
   </PropertyGroup>
-
   <!-- 打包 README -->
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
   <!-- 👇 针对旧版 Framework 的兼容性定义 -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or 
-                        '$(TargetFramework)' == 'net470' Or 
-                        '$(TargetFramework)' == 'net471' Or
-                        '$(TargetFramework)' == 'net472' Or
-                        '$(TargetFramework)' == 'net48' Or
-                        '$(TargetFramework)' == 'net481'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or                          '$(TargetFramework)' == 'net470' Or                          '$(TargetFramework)' == 'net471' Or                         '$(TargetFramework)' == 'net472' Or                         '$(TargetFramework)' == 'net48' Or                         '$(TargetFramework)' == 'net481'">
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.0.5" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations" Condition="'$(TargetFramework)' == 'net47' OR '$(TargetFramework)' == 'net471' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48' OR '$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net481'">
-      <HintPath>C:\Program Files\dotnet\shared\Microsoft.NETCore.App\8.0.20\System.ComponentModel.DataAnnotations.dll</HintPath>
-    </Reference>
+    <None Include="GlobalUsings.cs" Pack="true" PackagePath="buildTransitive\" />
   </ItemGroup>
-
 </Project>

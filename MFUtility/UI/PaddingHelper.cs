@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace MFUtility.Helpers
+﻿namespace MFUtility.UI
 {
     /// <summary>
     /// 为单个控件或整个容器统一设置 Padding。
@@ -35,7 +32,7 @@ namespace MFUtility.Helpers
             {
                 control.Padding = newPadding;
             }
-            else if (d is Border border)
+            else if (d is System.Windows.Controls.Border border)
             {
                 border.Padding = newPadding;
             }
@@ -52,7 +49,7 @@ namespace MFUtility.Helpers
                             case Control c:
                                 c.Padding = newPadding;
                                 break;
-                            case Border b:
+                            case System.Windows.Controls.Border b:
                                 b.Padding = newPadding;
                                 break;
                         }
