@@ -1,4 +1,4 @@
-﻿namespace MFUtility.UI
+﻿namespace MFUtility.UI.Helpers
 {
     /// <summary>
     /// 为单个控件或整个容器统一设置 Padding。

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace MFUtility.UI;
+namespace MFUtility.UI.Helpers;
 
 public class KeyBindingHelper {
 	

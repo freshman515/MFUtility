@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cvt="clr-namespace:MFUtility.UI.Converters">
+    <cvt:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    <cvt:BoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" Inverse="True" />
+    <cvt:InverseBoolConverter x:Key="InverseBoolConverter" />
+    <cvt:StringIsNullOrEmptyConverter x:Key="StringIsNullOrEmptyConverter" />
+    <cvt:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+    <cvt:EqualityConverter x:Key="EqualityConverter" />
+    <cvt:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
+    <cvt:MultiBoolAndConverter x:Key="MultiBoolAndConverter" />
+    <cvt:MultiBoolOrConverter x:Key="MultiBoolOrConverter" />
+    <cvt:PercentageConverter x:Key="PercentageConverter" />
+    <cvt:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+</ResourceDictionary>

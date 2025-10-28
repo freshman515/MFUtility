@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:MFUtility.UI"
+        xmlns:controls="clr-namespace:MFUtility.UI.Controls"
         mc:Ignorable="d" Height="160" Width="380"
         ResizeMode="NoResize"
         Background="Transparent"
@@ -89,7 +90,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <ui:StackPanel Orientation="Horizontal" Spacing="5">
+                <controls:StackPanel Orientation="Horizontal" Spacing="5">
                     <Image Grid.Row="1" Grid.Column="0"
                            Source="{Binding Icon,RelativeSource={RelativeSource AncestorType=Window}}" Height="24"
                            Width="24"
@@ -99,7 +100,7 @@
                                Text="{Binding MessageTitle,RelativeSource={RelativeSource AncestorType=Window}}"
                                VerticalAlignment="Center"
                                FontSize="17" />
-                </ui:StackPanel>
+                </controls:StackPanel>
 
                 <Button Grid.Row="0" Grid.Column="2"
                         Width="17"

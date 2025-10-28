@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
+﻿using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace MFUtility.UI;
+namespace MFUtility.UI.Controls;
 
 /// <summary>
 /// 增强版 TextBox，支持 Placeholder、圆角、占位颜色等。

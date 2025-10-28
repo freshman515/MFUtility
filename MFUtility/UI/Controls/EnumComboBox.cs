@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Reflection;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Threading;
 using WPFLocalizeExtension.Engine;
 
-namespace MFUtility.UI {
+namespace MFUtility.UI.Controls {
 	/// <summary>
 	/// 🧩 EnumComboBox — 自动绑定枚举项的 ComboBox。
 	/// 支持 Description、Display、Lang、自定义特性（任意属性名）。

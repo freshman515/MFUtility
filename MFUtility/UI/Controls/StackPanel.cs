@@ -1,4 +1,4 @@
-﻿namespace MFUtility.UI
+﻿namespace MFUtility.UI.Controls
 {
     /// <summary>
     /// 🧩 增强版 StackPanel（支持间距、统一尺寸、自动大小、自适应换行）

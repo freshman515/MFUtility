@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
-namespace MFUtility.UI {
+namespace MFUtility.UI.Controls {
 	/// <summary>
 	/// 🧩 智能增强版 Grid
 	/// 支持：

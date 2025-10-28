@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
+﻿using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace MFUtility.UI;
+namespace MFUtility.UI.Helpers;
 
 /// <summary>
 /// 为 System.Windows.Controls.TextBox 添加占位提示（Placeholder）

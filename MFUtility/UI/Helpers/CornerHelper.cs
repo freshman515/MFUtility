@@ -1,4 +1,6 @@
-﻿namespace MFUtility.UI;
+﻿using Border = MFUtility.UI.Controls.Border;
+
+namespace MFUtility.UI.Helpers;
 
 public class CornerHelper {
 	public static CornerRadius GetCornerRadius(DependencyObject obj)

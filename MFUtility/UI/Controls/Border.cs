@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 
-namespace MFUtility.UI
+namespace MFUtility.UI.Controls
 {
     /// <summary>
     /// 🧩 超强版 Border

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls.Primitives;
-using StackPanel = MFUtility.UI.StackPanel;
+using StackPanel = MFUtility.UI.Controls.StackPanel;
 
-namespace MFUtility.UI
+namespace MFUtility.UI.Helpers
 {
     /// <summary>
     /// 为 StackPanel、WrapPanel、UniformGrid 等容器添加统一子项间距（ItemSpacing）。

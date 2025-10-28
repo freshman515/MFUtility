@@ -1,4 +1,4 @@
-﻿namespace MFUtility.UI
+﻿namespace MFUtility.UI.Helpers
 {
     public static class MarginHelper
     {
