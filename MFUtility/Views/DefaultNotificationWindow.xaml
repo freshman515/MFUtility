@@ -1,0 +1,121 @@
+﻿<Window x:Class="MFUtility.Views.DefaultNotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="clr-namespace:MFUtility.UI"
+        mc:Ignorable="d" Height="160" Width="380"
+        ResizeMode="NoResize"
+        Background="Transparent"
+        WindowStyle="None" BorderThickness="0"
+        FontFamily="Microsoft YaHei"
+        Topmost="True"
+        Foreground="White"
+        AllowsTransparency="True"
+        Title="PopupWindow">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MFUtility;component/Assets/Svgs/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="ButtonFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle Margin="2" SnapsToDevicePixels="True"
+                                       Stroke="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                       StrokeThickness="1" StrokeDashArray="1 2" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="TinyButtonStyle" TargetType="{x:Type Button}">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+                <Setter Property="BorderBrush">
+                    <Setter.Value>
+                        <ImageBrush ImageSource="{StaticResource CloseIcon}" />
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Padding" Value="1" />
+                <Setter Property="Margin" Value="0,3,3,0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="border" BorderThickness="0" HorizontalAlignment="Left" Height="17"
+                                    VerticalAlignment="Top" Width="17" Background="{TemplateBinding BorderBrush}" />
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="OpacityMask" TargetName="border" Value="#55000000" />
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True" />
+                                <Trigger Property="ToggleButton.IsChecked" Value="True" />
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="#ADADAD" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+
+    </Window.Resources>
+    <Grid>
+        <Border CornerRadius="8" Background="#14181B" Margin="0">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="4"
+                                  BlurRadius="15"
+                                  Color="#93908B"
+                                  Opacity="0.6" />
+            </Border.Effect>
+        </Border>
+
+        <Border Padding="12" CornerRadius="6"
+                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Window}}"
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:StackPanel Orientation="Horizontal" Spacing="5">
+                    <Image Grid.Row="1" Grid.Column="0"
+                           Source="{Binding Icon,RelativeSource={RelativeSource AncestorType=Window}}" Height="24"
+                           Width="24"
+
+                           VerticalAlignment="Center" />
+                    <TextBlock x:Name="TbTitle"
+                               Text="{Binding MessageTitle,RelativeSource={RelativeSource AncestorType=Window}}"
+                               VerticalAlignment="Center"
+                               FontSize="17" />
+                </ui:StackPanel>
+
+                <Button Grid.Row="0" Grid.Column="2"
+                        Width="17"
+                        Height="17"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Margin="0,0,0,0"
+                        Style="{StaticResource TinyButtonStyle}" Click="Button_Click" />
+
+                <TextBlock x:Name="TbContent"
+                           Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                           FontSize="19"
+                           Text="{Binding Message,RelativeSource={RelativeSource AncestorType=Window}}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

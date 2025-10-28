@@ -18,7 +18,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.30</Version>
+    <Version>1.0.33</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
@@ -37,6 +37,7 @@
     <Content Include="风车.png" Pack="true" PackagePath="\">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="Assets\Svgs\HintIcons\**" />
   </ItemGroup>
   <!-- 👇 针对旧版 Framework 的兼容性定义 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or                          '$(TargetFramework)' == 'net470' Or                          '$(TargetFramework)' == 'net471' Or                         '$(TargetFramework)' == 'net472' Or                         '$(TargetFramework)' == 'net48' Or                         '$(TargetFramework)' == 'net481'">
@@ -56,5 +57,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GlobalUsings.cs" Pack="true" PackagePath="buildTransitive\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Assets\Svgs\HintIcons\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Assets\Svgs\HintIcons\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Assets\Svgs\HintIcons\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Fonts\NotoSansSC-Medium.ttf" />
+    <Resource Include="Assets\Fonts\NotoSansSC-Medium.ttf" />
   </ItemGroup>
 </Project>

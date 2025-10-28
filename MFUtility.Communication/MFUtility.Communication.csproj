@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <!-- 🔧 多目标框架支持：旧版 + 现代 -->
+    <TargetFrameworks>
+      net470;
+      net471;
+      net472;
+      net48;
+      net481;
+      net8.0-windows
+    </TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <!-- 📦 NuGet 包信息 -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>MF.Communication</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>Mf</Authors>
+    <Company>Mf Studio</Company>
+    <Product>MF.Communication</Product>
+    <Description>一个高性能通信库，支持 TCP、Socket、Pipe 等多种通信模式</Description>
+    <PackageTags>communication tcp socket pipe network utility</PackageTags>
+    <RepositoryUrl>https://github.com/MfStudio</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- 避免旧版本打包警告 -->
+    <ContinueOnError>WarnAndContinue</ContinueOnError>
+    <PackageIcon>风车.png</PackageIcon>
+  </PropertyGroup>
+  <!-- 📄 打包资源 -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <!-- ✅ 针对旧版 .NET Framework 兼容性 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net470' Or                         '$(TargetFramework)' == 'net471' Or                         '$(TargetFramework)' == 'net472' Or                         '$(TargetFramework)' == 'net48' Or                         '$(TargetFramework)' == 'net481'">
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+  <!-- 📦 常用依赖（根据通信库需要调整） -->
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+    <PackageReference Include="System.IO.Pipelines" Version="9.0.0" />
+  </ItemGroup>
+  <!-- 🔧 全局 using 支持（如果你有 GlobalUsings.cs） -->
+  <ItemGroup>
+    <None Include="GlobalUsings.cs" Pack="true" PackagePath="buildTransitive\" />
+  </ItemGroup>
+</Project>

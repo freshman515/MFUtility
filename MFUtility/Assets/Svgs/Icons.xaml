@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingImage x:Key="HintIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                <DrawingGroup>
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0,0,1024,1024" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#FAAD14">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero"
+                                          Figures="M512,0.44544C229.47712,0.44544 0.44544,229.47712 0.44544,512.00256 0.44544,794.52416 229.47712,1023.55456 512,1023.55456 794.52288,1023.55456 1023.55456,794.52288 1023.55456,512.00256 1023.55456,229.47712 794.52288,0.44544 512,0.44544z M512,900.78336C464.91264,900.78336 426.74048,861.36704 426.74048,812.74752 426.74048,764.128 464.91264,724.7104 512,724.7104 559.0848,724.7104 597.25696,764.12672 597.25696,812.74752 597.25696,861.36832 559.08608,900.78336 512,900.78336z M578.2016,583.85536C578.2016,632.47616,551.25632,671.88992,518.01856,671.88992L505.98272,671.88992C472.74368,671.88992,445.79968,632.47616,445.79968,583.85536L409.6896,231.71584C409.6896,183.09504,436.6336,143.68384,469.87136,143.68384L554.12864,143.68384C587.36768,143.68384,614.31168,183.09632,614.31168,231.71584L578.2016,583.85536z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="SuccessIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                <DrawingGroup x:Name="DrawingLayer">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0,0,1024,1024" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#FF65B85D">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero"
+                                          Figures="M512,0C229.003636,0 0,229.003636 0,512 0,794.996364 229.003636,1024 512,1024 794.996364,1024 1024,794.996364 1024,512 1024,229.003636 794.996364,0 512,0z M772.654545,425.425455L493.381818,704.698182C487.796363,710.283637 480.349091,714.007273 471.970909,714.007273 461.730909,715.869091 451.490909,713.076364 444.043636,705.629091L268.101818,528.756364A30.906182,30.906182,0,0,1,268.101818,485.003636L282.996364,470.109091C295.098182,458.007273,314.647273,458.007273,326.749091,470.109091L468.247273,611.607273 713.076364,366.778182C725.178182,354.676364,744.727273,354.676364,756.829091,366.778182L772.654545,381.672727C784.756363,393.774545,784.756363,413.323636,772.654545,425.425455z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="InfoIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                <DrawingGroup x:Name="DrawingLayer">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0,0,1024,1024" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#FF059DFF">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero"
+                                          Figures="M512,72.96A439.1424,439.1424,0,1,0,951.1424,512A439.6544,439.6544,0,0,0,512,72.96z M481.28,323.1744A30.72,30.72,0,0,1,542.72,323.1744L542.72,572.928A30.72,30.72,0,0,1,481.28,572.928z M512,720.2304A35.4816,35.4816,0,1,1,547.4816,684.8A35.4304,35.4304,0,0,1,512,720.2304z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="ErrorIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                <DrawingGroup x:Name="DrawingLayer">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0,0,1024,1024" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#FFCF3736">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero"
+                                          Figures="M512,0C229.376,0 0,229.376 0,512 0,794.624 229.376,1024 512,1024 794.624,1024 1024,794.624 1024,512 1024,229.376 794.624,0 512,0z M730.624,672.256C746.496,688.128 746.496,714.24 730.624,730.112 722.432,738.304 712.192,741.888 701.44,741.888 690.688,741.888 680.448,737.792 672.256,730.112L512,569.856 351.744,730.112C343.552,738.304 333.312,741.888 322.56,741.888 311.808,741.888 301.568,737.792 293.376,730.112 277.504,714.24 277.504,688.128 293.376,672.256L454.144,512 293.376,351.744C277.504,335.872 277.504,309.76 293.376,293.888 309.248,278.016 335.36,278.016 351.232,293.888L512,454.144 672.256,293.888C688.128,278.016 714.24,278.016 730.112,293.888 745.984,309.76 745.984,335.872 730.112,351.744L569.856,512 730.624,672.256z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    <DrawingImage x:Key="CloseIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                <DrawingGroup x:Name="DrawingLayer">
+                    <DrawingGroup.ClipGeometry>
+                        <RectangleGeometry Rect="0,0,1024,1024" />
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="#fff">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero"
+                                          Figures="M572.91974805,512L815.74071559,269.17903243C832.04318337,252.87656465 832.04318337,225.4197768 815.74071559,208.25928441 799.43824781,191.95681663 771.98145996,191.95681663 754.82096757,208.25928441L512,451.08025195 269.17903243,208.25928441C252.87656465,191.95681663 225.4197768,191.95681663 208.25928441,208.25928441 191.95681663,224.56175219 191.95681663,252.01854004 208.25928441,269.17903243L451.08025195,512 208.25928441,754.82096757C191.95681663,771.12343535 191.95681663,798.5802232 208.25928441,815.74071559 224.56175219,832.04318337 252.01854004,832.04318337 269.17903243,815.74071559L512,572.91974805 754.82096757,815.74071559C771.12343535,832.04318337 798.5802232,832.04318337 815.74071559,815.74071559 832.04318337,799.43824781 832.04318337,771.98145996 815.74071559,754.82096757L572.91974805,512z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>
