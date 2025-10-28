@@ -1,15 +1,21 @@
-﻿using System.Windows.Documents;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace MFUtility.UI;
 
 /// <summary>
-/// 为 TextBox 添加占位提示（Placeholder）
-/// 示例：
+/// 为 System.Windows.Controls.TextBox 添加占位提示（Placeholder）
+/// 使用示例：
 /// <TextBox local:TextboxHelper.Placeholder="请输入内容..." />
 /// </summary>
 public static class TextboxHelper
 {
+    #region === 附加属性 ===
+
+    /// <summary>占位提示文字</summary>
     public static readonly DependencyProperty PlaceholderProperty =
         DependencyProperty.RegisterAttached(
             "Placeholder",
@@ -23,9 +29,13 @@ public static class TextboxHelper
     public static void SetPlaceholder(DependencyObject obj, string value) =>
         obj.SetValue(PlaceholderProperty, value);
 
+    #endregion
+
+    #region === 事件逻辑 ===
+
     private static void OnPlaceholderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not TextBox textBox)
+        if (d is not global::System.Windows.Controls.TextBox textBox)
             return;
 
         textBox.Loaded -= TextBox_Loaded;
@@ -38,17 +48,21 @@ public static class TextboxHelper
 
     private static void TextBox_Loaded(object sender, RoutedEventArgs e)
     {
-        if (sender is TextBox tb)
+        if (sender is global::System.Windows.Controls.TextBox tb)
             ShowOrHidePlaceholder(tb);
     }
 
     private static void TextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (sender is TextBox tb)
+        if (sender is global::System.Windows.Controls.TextBox tb)
             ShowOrHidePlaceholder(tb);
     }
 
-    private static void ShowOrHidePlaceholder(TextBox textBox)
+    #endregion
+
+    #region === 绘制逻辑 ===
+
+    private static void ShowOrHidePlaceholder(global::System.Windows.Controls.TextBox textBox)
     {
         var layer = AdornerLayer.GetAdornerLayer(textBox);
         if (layer == null) return;
@@ -59,9 +73,7 @@ public static class TextboxHelper
         if (string.IsNullOrEmpty(textBox.Text) && !string.IsNullOrEmpty(GetPlaceholder(textBox)))
         {
             if (existing == null)
-            {
                 layer.Add(new PlaceholderAdorner(textBox, GetPlaceholder(textBox)));
-            }
         }
         else
         {
@@ -80,75 +92,75 @@ public static class TextboxHelper
         public PlaceholderAdorner(UIElement adornedElement, string placeholder)
             : base(adornedElement)
         {
-            IsHitTestVisible = false; // 不阻止点击
+            IsHitTestVisible = false; // 不阻止鼠标事件
             _placeholder = placeholder;
         }
-protected override void OnRender(DrawingContext drawingContext)
-{
-    base.OnRender(drawingContext);
 
-    if (AdornedElement is not TextBox textBox)
-        return;
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
 
-    string text = _placeholder;
-    if (string.IsNullOrEmpty(text))
-        return;
+            if (AdornedElement is not global::System.Windows.Controls.TextBox textBox)
+                return;
 
-    // 使用 TextBox 的字体属性
-    var typeface = new Typeface(
-        textBox.FontFamily,
-        textBox.FontStyle,
-        textBox.FontWeight,
-        textBox.FontStretch);
+            if (string.IsNullOrEmpty(_placeholder))
+                return;
 
-    var foreground = new SolidColorBrush(Color.FromArgb(128, 128, 128, 128));
-    foreground.Freeze();
+            // 使用 TextBox 的字体样式属性
+            var typeface = new Typeface(
+                textBox.FontFamily,
+                textBox.FontStyle,
+                textBox.FontWeight,
+                textBox.FontStretch);
 
-    var formattedText = new FormattedText(
-        text,
-        System.Globalization.CultureInfo.CurrentCulture,
-        textBox.FlowDirection,
-        typeface,
-        textBox.FontSize,
-        foreground,
-        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            // 半透明灰色提示文字
+            var foreground = new SolidColorBrush(Color.FromArgb(128, 128, 128, 128));
+            foreground.Freeze();
 
-    // === 计算 X 对齐（HorizontalContentAlignment） ===
-    double x = textBox.Padding.Left;
-    switch (textBox.HorizontalContentAlignment)
-    {
-        case HorizontalAlignment.Center:
-            x = (textBox.ActualWidth - formattedText.Width) / 2;
-            break;
-        case HorizontalAlignment.Right:
-            x = textBox.ActualWidth - formattedText.Width - textBox.Padding.Right - 2;
-            break;
-        case HorizontalAlignment.Stretch:
-        case HorizontalAlignment.Left:
-        default:
-            x = textBox.Padding.Left + 2;
-            break;
+            var formattedText = new FormattedText(
+                _placeholder,
+                System.Globalization.CultureInfo.CurrentCulture,
+                textBox.FlowDirection,
+                typeface,
+                textBox.FontSize,
+                foreground,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            // === X 对齐 ===
+            double x = textBox.Padding.Left + 2;
+            switch (textBox.HorizontalContentAlignment)
+            {
+                case HorizontalAlignment.Center:
+                    x = (textBox.ActualWidth - formattedText.Width) / 2;
+                    break;
+                case HorizontalAlignment.Right:
+                    x = textBox.ActualWidth - formattedText.Width - textBox.Padding.Right - 2;
+                    break;
+                case HorizontalAlignment.Stretch:
+                case HorizontalAlignment.Left:
+                default:
+                    break;
+            }
+
+            // === Y 对齐 ===
+            double y = textBox.Padding.Top + 1;
+            switch (textBox.VerticalContentAlignment)
+            {
+                case VerticalAlignment.Center:
+                    y = (textBox.ActualHeight - formattedText.Height) / 2;
+                    break;
+                case VerticalAlignment.Bottom:
+                    y = textBox.ActualHeight - formattedText.Height - textBox.Padding.Bottom - 1;
+                    break;
+                case VerticalAlignment.Stretch:
+                case VerticalAlignment.Top:
+                default:
+                    break;
+            }
+
+            drawingContext.DrawText(formattedText, new Point(x, y));
+        }
     }
 
-    // === 计算 Y 对齐（VerticalContentAlignment） ===
-    double y = textBox.Padding.Top;
-    switch (textBox.VerticalContentAlignment)
-    {
-        case VerticalAlignment.Center:
-            y = (textBox.ActualHeight - formattedText.Height) / 2;
-            break;
-        case VerticalAlignment.Bottom:
-            y = textBox.ActualHeight - formattedText.Height - textBox.Padding.Bottom - 1;
-            break;
-        case VerticalAlignment.Stretch:
-        case VerticalAlignment.Top:
-        default:
-            y = textBox.Padding.Top + 1;
-            break;
-    }
-
-    drawingContext.DrawText(formattedText, new Point(x, y));
-}
-
-    }
+    #endregion
 }

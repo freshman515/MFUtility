@@ -18,7 +18,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.20</Version>
+    <Version>1.0.30</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
@@ -28,10 +28,15 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- 👇 防止 NU5026 错误 -->
     <ContinueOnError>WarnAndContinue</ContinueOnError>
+    <PackageIcon>风车.png</PackageIcon>
+    <ContinueOnError>WarnAndContinue</ContinueOnError>
   </PropertyGroup>
   <!-- 打包 README -->
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <!-- 👇 针对旧版 Framework 的兼容性定义 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or                          '$(TargetFramework)' == 'net470' Or                          '$(TargetFramework)' == 'net471' Or                         '$(TargetFramework)' == 'net472' Or                         '$(TargetFramework)' == 'net48' Or                         '$(TargetFramework)' == 'net481'">
@@ -47,6 +52,7 @@
     <PackageReference Include="NLog" Version="6.0.5" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GlobalUsings.cs" Pack="true" PackagePath="buildTransitive\" />

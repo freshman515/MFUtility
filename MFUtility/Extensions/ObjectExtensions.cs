@@ -155,4 +155,29 @@ public static class ObjectExtensions {
 		public new bool Equals(object? x, object? y) => ReferenceEquals(x, y);
 		public int GetHashCode(object obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
 	}
+
+	/// <summary>
+	/// 将源对象的公共属性复制到目标对象（忽略类型不兼容或只读属性）
+	/// </summary>
+	public static void CopyTo<TSource, TTarget>(this TSource source, TTarget target) {
+		if (source == null || target == null) return;
+
+		var srcProps = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		var tgtProps = typeof(TTarget).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+			.Where(p => p.CanWrite)
+			.ToDictionary(p => p.Name);
+
+		foreach (var srcProp in srcProps) {
+			if (!srcProp.CanRead) continue;
+			if (tgtProps.TryGetValue(srcProp.Name, out var tgtProp)) {
+				try {
+					var value = srcProp.GetValue(source);
+					if (value != null && tgtProp.PropertyType.IsAssignableFrom(srcProp.PropertyType)) {
+						tgtProp.SetValue(target, value);
+					}
+				} catch { /* ignore type mismatch */
+				}
+			}
+		}
+	}
 }
