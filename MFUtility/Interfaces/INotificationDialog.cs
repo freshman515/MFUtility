@@ -1,4 +1,5 @@
-﻿using MFUtility.Services;
+﻿using MFUtility.Enums;
+using MFUtility.Services;
 
 namespace MFUtility.Interfaces;
 

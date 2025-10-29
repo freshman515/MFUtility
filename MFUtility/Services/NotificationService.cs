@@ -1,25 +1,10 @@
 ﻿using System.Media;
 using System.Windows.Media.Animation;
+using MFUtility.Enums;
 using MFUtility.Interfaces;
 using MFUtility.Views;
 
 namespace MFUtility.Services;
-
-public enum NotificationMode {
-	/// <summary>新通知向上叠加（默认）</summary>
-	Stack,
-	/// <summary>覆盖上一个通知，只保留一个</summary>
-	Replace,
-	/// <summary>持久显示，直到手动关闭</summary>
-	Persistent
-}
-
-public enum NotificationType {
-	Info,
-	Success,
-	Warning,
-	Error
-}
 
 public static class NotificationService {
 	private static readonly List<Window> _dialogs = new();
@@ -41,7 +26,7 @@ public static class NotificationService {
 	// =========================================================
 	// 泛型重载（允许用户自定义窗口）
 	// =========================================================
-	public static async void Show<T>(
+	public static void Show<T>(
 		string title,
 		string content,
 		NotificationType type = NotificationType.Info,
