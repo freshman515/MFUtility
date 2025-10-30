@@ -1,8 +1,8 @@
 ﻿using System.Windows.Media;
 using MFUtility.Enums;
 using MFUtility.Helpers;
-using MFUtility.Interfaces;
-using MFUtility.Services;
+using MFUtility.Notifications.Enums;
+using MFUtility.Notifications.Interfaces;
 
 namespace MFUtility.Views;
 

@@ -1,165 +1,132 @@
-﻿using System.IO;
-using System.Text;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace MFUtility.Helpers;
 
 /// <summary>
-/// 通用配置文件读写工具，支持 JSON / XML 格式。
-/// 自动创建文件夹，支持异步操作，并允许文件共享访问。
+/// 🌟 通用配置文件工具：自动识别 JSON / XML 后缀并调用对应 Helper。
+/// ✅ 自动创建目录、异步安全、支持原子写入与重试机制。
+/// ✅ 推荐统一入口使用此类：ConfigHelper.Save / Load（可自动判断格式）。
 /// </summary>
 public static class ConfigHelper
 {
-    #region ==== JSON ====
+	#region === 通用自动判断 ===
 
-    /// <summary>
-    /// 异步保存对象为 JSON 文件（带共享写入和重试机制）
-    /// </summary>
-    public static async Task SaveJsonAsync<T>(string filePath, T data, bool indented = true)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-            throw new ArgumentNullException(nameof(filePath));
+	/// <summary>
+	/// 同步保存对象，根据文件后缀自动判断使用 JSON 或 XML。
+	/// </summary>
+	public static void Save<T>(string filePath, T data, bool indented = true)
+	{
+		if (string.IsNullOrWhiteSpace(filePath))
+			throw new ArgumentNullException(nameof(filePath));
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+		string ext = Path.GetExtension(filePath).ToLowerInvariant();
 
-        var json = JsonConvert.SerializeObject(data,
-            indented ? Formatting.Indented : Formatting.None);
+		switch (ext)
+		{
+			case ".json":
+				JsonHelper.Save(filePath, data, indented);
+				break;
 
-        await RetryAsync(() =>
-        {
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using var writer = new StreamWriter(fs, new UTF8Encoding(false));
-            writer.Write(json);
-        });
-    }
+			case ".xml":
+				XmlHelper.Save(filePath, data);
+				break;
 
-    /// <summary>
-    /// 同步保存对象为 JSON 文件（带共享写入和重试机制）
-    /// </summary>
-    public static void SaveJson<T>(string filePath, T data, bool indented = true)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-            throw new ArgumentNullException(nameof(filePath));
+			default:
+				throw new NotSupportedException($"不支持的配置文件格式: {ext}");
+		}
+	}
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+	/// <summary>
+	/// 异步保存对象，根据文件后缀自动判断使用 JSON 或 XML。
+	/// </summary>
+	public static async Task SaveAsync<T>(string filePath, T data, bool indented = true)
+	{
+		if (string.IsNullOrWhiteSpace(filePath))
+			throw new ArgumentNullException(nameof(filePath));
 
-        var json = JsonConvert.SerializeObject(data,
-            indented ? Formatting.Indented : Formatting.None);
+		string ext = Path.GetExtension(filePath).ToLowerInvariant();
 
-        Retry(() =>
-        {
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using var writer = new StreamWriter(fs, new UTF8Encoding(false));
-            writer.Write(json);
-        });
-    }
+		switch (ext)
+		{
+			case ".json":
+				await JsonHelper.SaveAsync(filePath, data, indented);
+				break;
 
-    /// <summary>
-    /// 异步读取 JSON 文件（带共享访问）
-    /// </summary>
-    public static async Task<T?> LoadJsonAsync<T>(string filePath)
-    {
-        if (!File.Exists(filePath))
-            return default;
+			case ".xml":
+				await XmlHelper.SaveAsync(filePath, data);
+				break;
 
-        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        using var reader = new StreamReader(fs, Encoding.UTF8);
-        var json = await reader.ReadToEndAsync();
-        return JsonConvert.DeserializeObject<T>(json);
-    }
+			default:
+				throw new NotSupportedException($"不支持的配置文件格式: {ext}");
+		}
+	}
 
-    /// <summary>
-    /// 同步读取 JSON 文件（带共享访问）
-    /// </summary>
-    public static T? LoadJson<T>(string filePath)
-    {
-        if (!File.Exists(filePath))
-            return default;
+	/// <summary>
+	/// 同步读取对象，根据文件后缀自动判断使用 JSON 或 XML。
+	/// </summary>
+	public static T? Load<T>(string filePath)
+	{
+		if (string.IsNullOrWhiteSpace(filePath))
+			throw new ArgumentNullException(nameof(filePath));
 
-        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        using var reader = new StreamReader(fs, Encoding.UTF8);
-        var json = reader.ReadToEnd();
-        return JsonConvert.DeserializeObject<T>(json);
-    }
+		string ext = Path.GetExtension(filePath).ToLowerInvariant();
 
-    #endregion
+		return ext switch
+		{
+			".json" => JsonHelper.Load<T>(filePath),
+			".xml"  => XmlHelper.Load<T>(filePath),
+			_ => throw new NotSupportedException($"不支持的配置文件格式: {ext}")
+		};
+	}
 
-    #region ==== XML ====
+	/// <summary>
+	/// 异步读取对象，根据文件后缀自动判断使用 JSON 或 XML。
+	/// </summary>
+	public static async Task<T?> LoadAsync<T>(string filePath)
+	{
+		if (string.IsNullOrWhiteSpace(filePath))
+			throw new ArgumentNullException(nameof(filePath));
 
-    public static void SaveXml<T>(string filePath, T data)
-    {
-        if (string.IsNullOrWhiteSpace(filePath))
-            throw new ArgumentNullException(nameof(filePath));
+		string ext = Path.GetExtension(filePath).ToLowerInvariant();
 
-        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+		return ext switch
+		{
+			".json" => await JsonHelper.LoadAsync<T>(filePath),
+			".xml"  => await XmlHelper.LoadAsync<T>(filePath),
+			_ => throw new NotSupportedException($"不支持的配置文件格式: {ext}")
+		};
+	}
 
-        var serializer = new XmlSerializer(typeof(T));
+	#endregion
 
-        Retry(() =>
-        {
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            serializer.Serialize(fs, data);
-        });
-    }
+	#region === 明确调用（兼容旧代码）===
 
-    public static async Task SaveXmlAsync<T>(string filePath, T data)
-    {
-        await Task.Run(() => SaveXml(filePath, data));
-    }
+	// 保留原有的显式方法，避免破坏旧代码引用
+	public static Task SaveJsonAsync<T>(string filePath, T data, bool indented = true)
+		=> JsonHelper.SaveAsync(filePath, data, indented);
 
-    public static T? LoadXml<T>(string filePath)
-    {
-        if (!File.Exists(filePath))
-            return default;
+	public static void SaveJson<T>(string filePath, T data, bool indented = true)
+		=> JsonHelper.Save(filePath, data, indented);
 
-        var serializer = new XmlSerializer(typeof(T));
-        using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        return (T?)serializer.Deserialize(fs);
-    }
+	public static Task<T?> LoadJsonAsync<T>(string filePath)
+		=> JsonHelper.LoadAsync<T>(filePath);
 
-    public static async Task<T?> LoadXmlAsync<T>(string filePath)
-    {
-        return await Task.Run(() => LoadXml<T>(filePath));
-    }
+	public static T? LoadJson<T>(string filePath)
+		=> JsonHelper.Load<T>(filePath);
 
-    #endregion
+	public static Task SaveXmlAsync<T>(string filePath, T data)
+		=> XmlHelper.SaveAsync(filePath, data);
 
-    #region ==== Internal Retry Helper ====
+	public static void SaveXml<T>(string filePath, T data)
+		=> XmlHelper.Save(filePath, data);
 
-    private static void Retry(Action action, int retryCount = 3, int delayMs = 200)
-    {
-        for (int i = 0; i < retryCount; i++)
-        {
-            try
-            {
-                action();
-                return;
-            }
-            catch (IOException)
-            {
-                if (i == retryCount - 1) throw;
-                Thread.Sleep(delayMs);
-            }
-        }
-    }
+	public static Task<T?> LoadXmlAsync<T>(string filePath)
+		=> XmlHelper.LoadAsync<T>(filePath);
 
-    private static async Task RetryAsync(Action action, int retryCount = 3, int delayMs = 200)
-    {
-        for (int i = 0; i < retryCount; i++)
-        {
-            try
-            {
-                action();
-                return;
-            }
-            catch (IOException)
-            {
-                if (i == retryCount - 1) throw;
-                await Task.Delay(delayMs);
-            }
-        }
-    }
+	public static T? LoadXml<T>(string filePath)
+		=> XmlHelper.Load<T>(filePath);
 
-    #endregion
+	#endregion
 }

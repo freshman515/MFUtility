@@ -1,7 +1,6 @@
-﻿using MFUtility.Enums;
-using MFUtility.Services;
+﻿using MFUtility.Notifications.Enums;
 
-namespace MFUtility.Interfaces;
+namespace MFUtility.Notifications.Interfaces;
 
 public interface INotificationDialog {
 	string MessageTitle { get; set; }

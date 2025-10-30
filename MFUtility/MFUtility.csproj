@@ -18,7 +18,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.34</Version>
+    <Version>1.0.36</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
@@ -70,5 +70,9 @@
   <ItemGroup>
     <None Remove="Assets\Fonts\NotoSansSC-Medium.ttf" />
     <Resource Include="Assets\Fonts\NotoSansSC-Medium.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Enums;
+﻿namespace MFUtility.Notifications.Enums;
 
 public enum NotifycationPosition {
 	Center,

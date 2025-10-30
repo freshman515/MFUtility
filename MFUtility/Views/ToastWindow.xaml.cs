@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Animation;
 using MFUtility.Enums;
-using MFUtility.Services;
+using MFUtility.Notifications.Enums;
 
 namespace MFUtility.Views {
 	/// <summary>
@@ -18,7 +18,6 @@ namespace MFUtility.Views {
 
 			InitializeComponent();
 			DataContext = this;
-			//Loaded += ToastWindow_Loaded;
 			Opacity = 0;
 		}
 

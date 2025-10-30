@@ -1,14 +1,33 @@
 ﻿using System.Media;
 using System.Windows.Media.Animation;
-using MFUtility.Enums;
-using MFUtility.Interfaces;
+using MFUtility.Notifications.Enums;
+using MFUtility.Notifications.Interfaces;
 using MFUtility.Views;
 
-namespace MFUtility.Services;
+namespace MFUtility.Notifications.Services;
 
-public static class NotificationService {
+public static class NotificationService
+{
 	private static readonly List<Window> _dialogs = new();
 	private const double Gap = 10;
+
+	#region === 快捷方法 ===
+	public static void ShowSuccess(string title, string content, int staySeconds = 5,
+		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
+		=> Show(title, content, NotificationType.Success, mode, staySeconds, enableBorderColor);
+
+	public static void ShowError(string title, string content, int staySeconds = 5,
+		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
+		=> Show(title, content, NotificationType.Error, mode, staySeconds, enableBorderColor);
+
+	public static void ShowWarning(string title, string content, int staySeconds = 5,
+		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
+		=> Show(title, content, NotificationType.Warning, mode, staySeconds, enableBorderColor);
+
+	public static void ShowInfo(string title, string content, int staySeconds = 5,
+		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
+		=> Show(title, content, NotificationType.Info, mode, staySeconds, enableBorderColor);
+	#endregion
 
 	// =========================================================
 	// 默认通知（使用内置 DefaultNotificationWindow）
@@ -19,7 +38,8 @@ public static class NotificationService {
 		NotificationType type = NotificationType.Info,
 		NotificationMode mode = NotificationMode.Stack,
 		int staySeconds = 5,
-		bool enableBorderColor = true) {
+		bool enableBorderColor = true)
+	{
 		Show<DefaultNotificationWindow>(title, content, type, mode, staySeconds, enableBorderColor);
 	}
 
@@ -33,15 +53,19 @@ public static class NotificationService {
 		NotificationMode mode = NotificationMode.Stack,
 		int staySeconds = 5,
 		bool enableBorderColor = false)
-		where T : Window, INotificationDialog, new() {
-		Application.Current.Dispatcher.Invoke(async () => {
-			if (mode == NotificationMode.Replace) {
+		where T : Window, INotificationDialog, new()
+	{
+		Application.Current.Dispatcher.Invoke(async () =>
+		{
+			if (mode == NotificationMode.Replace)
+			{
 				foreach (var dlg in _dialogs.ToList())
 					await NotificationAnimator.PlayCloseAsync(dlg);
 				_dialogs.Clear();
 			}
 
-			var dialog = new T {
+			var dialog = new T
+			{
 				Topmost = true,
 				Owner = Application.Current.MainWindow,
 				MessageTitle = title,
@@ -49,7 +73,7 @@ public static class NotificationService {
 				Type = type
 			};
 
-			// 🔧 如果这个窗口支持 EnableBorderColor，则动态赋值
+			// ✅ 如果支持边框颜色，则赋值
 			if (dialog is DefaultNotificationWindow defWin)
 				defWin.EnableBorderColor = enableBorderColor;
 
@@ -67,7 +91,8 @@ public static class NotificationService {
 
 			NotificationAnimator.PlayOpen(dialog, left, top);
 
-			if (mode != NotificationMode.Persistent) {
+			if (mode != NotificationMode.Persistent)
+			{
 				await Task.Delay(staySeconds * 1000);
 				if (dialog.IsVisible)
 					await NotificationAnimator.PlayCloseAsync(dialog);
@@ -78,7 +103,8 @@ public static class NotificationService {
 	// =========================================================
 	// 补位与定位逻辑
 	// =========================================================
-	private static void DialogClosed(object sender, EventArgs e) {
+	private static void DialogClosed(object sender, EventArgs e)
+	{
 		if (sender is not Window closed) return;
 		_dialogs.Remove(closed);
 
@@ -88,14 +114,16 @@ public static class NotificationService {
 		double bottom = SystemParameters.WorkArea.Bottom;
 		double offset = bottom;
 
-		foreach (var dlg in ordered) {
+		foreach (var dlg in ordered)
+		{
 			double height = dlg.ActualHeight > 0 ? dlg.ActualHeight : 140;
 			offset -= (height + Gap);
 			NotificationAnimator.PlayDrop(dlg, offset);
 		}
 	}
 
-	private static double GetNextTop(double height, NotificationMode mode) {
+	private static double GetNextTop(double height, NotificationMode mode)
+	{
 		double bottom = SystemParameters.WorkArea.Bottom;
 
 		if (mode == NotificationMode.Replace)
@@ -116,22 +144,26 @@ public static class NotificationService {
 /// <summary>
 /// 🌟 通知动画控制器
 /// </summary>
-public static class NotificationAnimator {
-	public static void PlayOpen(Window window, double targetLeft, double targetTop, int duration = 300) {
+public static class NotificationAnimator
+{
+	public static void PlayOpen(Window window, double targetLeft, double targetTop, int duration = 300)
+	{
 		if (window == null) return;
 
 		window.Left = SystemParameters.WorkArea.Right; // 从屏幕右侧外开始
 		window.Top = targetTop;
 		window.Opacity = 0;
 
-		var slideIn = new DoubleAnimation {
+		var slideIn = new DoubleAnimation
+		{
 			From = SystemParameters.WorkArea.Right,
 			To = targetLeft,
 			Duration = TimeSpan.FromMilliseconds(duration),
 			EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
 		};
 
-		var fadeIn = new DoubleAnimation {
+		var fadeIn = new DoubleAnimation
+		{
 			From = 0,
 			To = 1,
 			Duration = TimeSpan.FromMilliseconds(duration / 1.2)
@@ -139,22 +171,24 @@ public static class NotificationAnimator {
 
 		window.BeginAnimation(Window.LeftProperty, slideIn);
 		window.BeginAnimation(Window.OpacityProperty, fadeIn);
-
 		try { SystemSounds.Asterisk.Play(); } catch { }
 	}
 
-	public static async Task PlayCloseAsync(Window window, int duration = 400) {
+	public static async Task PlayCloseAsync(Window window, int duration = 400)
+	{
 		if (window == null) return;
 
 		double right = SystemParameters.WorkArea.Right;
-		var slideOut = new DoubleAnimation {
+		var slideOut = new DoubleAnimation
+		{
 			From = window.Left,
 			To = right,
 			Duration = TimeSpan.FromMilliseconds(duration),
 			EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
 		};
 
-		var fadeOut = new DoubleAnimation {
+		var fadeOut = new DoubleAnimation
+		{
 			From = 1,
 			To = 0,
 			Duration = TimeSpan.FromMilliseconds(duration / 1.5)
@@ -170,8 +204,10 @@ public static class NotificationAnimator {
 		window.Close();
 	}
 
-	public static void PlayDrop(Window window, double newTop) {
-		var anim = new DoubleAnimation {
+	public static void PlayDrop(Window window, double newTop)
+	{
+		var anim = new DoubleAnimation
+		{
 			From = window.Top,
 			To = newTop,
 			Duration = TimeSpan.FromMilliseconds(300),

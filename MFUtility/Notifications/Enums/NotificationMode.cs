@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Enums;
+﻿namespace MFUtility.Notifications.Enums;
 
 public enum NotificationMode {
 	/// <summary>新通知向上叠加（默认）</summary>
