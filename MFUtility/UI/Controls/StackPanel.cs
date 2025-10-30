@@ -1,7 +1,17 @@
-﻿namespace MFUtility.UI.Controls
+﻿using System;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace MFUtility.UI.Controls
 {
     /// <summary>
-    /// 🧩 增强版 StackPanel（支持间距、统一尺寸、自动大小、自适应换行）
+    /// 🧩 增强版 StackPanel（支持间距序列、统一尺寸、自动大小、自适应换行）
+    /// 支持：
+    /// - Spacing="10" → 所有间距=10
+    /// - Spacing="10 20" 或 "10,20" → 第1个间距=10，第2个间距=20，后续以20为准
+    /// - AutoSize、ItemWidth、ItemHeight、WrapWhenOverflow
     /// </summary>
     public class StackPanel : System.Windows.Controls.StackPanel
     {
@@ -20,16 +30,16 @@
         #region === 依赖属性 ===
 
         /// <summary>
-        /// 子元素间距
+        /// 子元素间距（支持多值："10 20 30" 或 "10,20"）
         /// </summary>
-        public double Spacing
+        public string Spacing
         {
-            get => (double)GetValue(SpacingProperty);
+            get => (string)GetValue(SpacingProperty);
             set => SetValue(SpacingProperty, value);
         }
         public static readonly DependencyProperty SpacingProperty =
-            DependencyProperty.Register(nameof(Spacing), typeof(double), typeof(StackPanel),
-                new PropertyMetadata(0.0, OnLayoutChanged));
+            DependencyProperty.Register(nameof(Spacing), typeof(string), typeof(StackPanel),
+                new PropertyMetadata("0", OnLayoutChanged));
 
         /// <summary>
         /// 是否根据内容自动调整宽高
@@ -93,7 +103,7 @@
         {
             if (Children.Count == 0) return;
 
-            double spacing = Spacing;
+            var spacingValues = ParseSpacing(Spacing, Math.Max(Children.Count - 1, 1));
             bool autoSize = AutoSize;
             bool wrap = WrapWhenOverflow;
             double itemW = ItemWidth;
@@ -108,11 +118,12 @@
                 if (Children[i] is not FrameworkElement fe)
                     continue;
 
-                // 应用间距
+                // ✅ 应用间距序列
+                double gap = (i < spacingValues.Length ? spacingValues[i] : spacingValues.LastOrDefault());
                 if (Orientation == Orientation.Horizontal)
-                    fe.Margin = new Thickness(0, 0, (i == count - 1 ? 0 : spacing), 0);
+                    fe.Margin = new Thickness(0, 0, (i == count - 1 ? 0 : gap), 0);
                 else
-                    fe.Margin = new Thickness(0, 0, 0, (i == count - 1 ? 0 : spacing));
+                    fe.Margin = new Thickness(0, 0, 0, (i == count - 1 ? 0 : gap));
 
                 // ✅ 统一宽高（若设置）
                 if (!double.IsNaN(itemW) && itemW > 0)
@@ -124,17 +135,17 @@
 
                 if (Orientation == Orientation.Horizontal)
                 {
-                    totalWidth += fe.DesiredSize.Width + (i == count - 1 ? 0 : spacing);
+                    totalWidth += fe.DesiredSize.Width + (i == count - 1 ? 0 : gap);
                     maxHeight = Math.Max(maxHeight, fe.DesiredSize.Height);
                 }
                 else
                 {
-                    totalHeight += fe.DesiredSize.Height + (i == count - 1 ? 0 : spacing);
+                    totalHeight += fe.DesiredSize.Height + (i == count - 1 ? 0 : gap);
                     maxWidth = Math.Max(maxWidth, fe.DesiredSize.Width);
                 }
             }
 
-            // === WrapWhenOverflow 模拟轻量换行 ===
+            // === WrapWhenOverflow 模拟换行 ===
             if (wrap && Orientation == Orientation.Horizontal)
             {
                 double availableWidth = ActualWidth > 0 ? ActualWidth : double.PositiveInfinity;
@@ -142,20 +153,21 @@
                 double rowHeight = 0;
                 double totalWrapHeight = 0;
 
-                foreach (UIElement child in Children)
+                for (int i = 0; i < Children.Count; i++)
                 {
-                    if (child is not FrameworkElement fe) continue;
+                    if (Children[i] is not FrameworkElement fe) continue;
                     double w = fe.DesiredSize.Width;
                     double h = fe.DesiredSize.Height;
+                    double gap = (i < spacingValues.Length ? spacingValues[i] : spacingValues.LastOrDefault());
 
                     if (currentWidth + w > availableWidth && currentWidth > 0)
                     {
-                        totalWrapHeight += rowHeight + spacing;
+                        totalWrapHeight += rowHeight + gap;
                         currentWidth = 0;
                         rowHeight = 0;
                     }
 
-                    currentWidth += w + spacing;
+                    currentWidth += w + gap;
                     rowHeight = Math.Max(rowHeight, h);
                 }
 
@@ -177,6 +189,30 @@
                     Height = totalHeight;
                 }
             }
+        }
+
+        #endregion
+
+        #region === Spacing 解析 ===
+
+        private static double[] ParseSpacing(string text, int count)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return Enumerable.Repeat(0.0, count).ToArray();
+
+            text = text.Replace('，', ' ').Replace(',', ' ');
+            var parts = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var values = parts
+                .Select(s => double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 0)
+                .ToList();
+
+            // 不足则填充，超出则截断
+            while (values.Count < count)
+                values.Add(values.LastOrDefault());
+            if (values.Count > count)
+                values = values.Take(count).ToList();
+
+            return values.ToArray();
         }
 
         #endregion

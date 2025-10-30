@@ -18,7 +18,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.36</Version>
+    <Version>1.0.39</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
@@ -53,6 +53,7 @@
     <PackageReference Include="NLog" Version="6.0.5" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
   </ItemGroup>
   <ItemGroup>
