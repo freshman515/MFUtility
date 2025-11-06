@@ -20,6 +20,45 @@ public static class EnumHelper {
 	private static readonly ConcurrentDictionary<(Type, Enum), Type?> _mappedTypeCache = new();
 
 	/// <summary>
+	/// 根据某个枚举及其标注的特性，取出目标枚举类型中的第 index 个值。
+	/// 例如：GetEnumByMappedAttribute(UnitCategory.Length, 2)
+	/// </summary>
+	/// <typeparam name="TSource">源枚举类型，如 UnitCategory</typeparam>
+	/// <typeparam name="TAttr">映射特性类型，如 UnitTypeAttribute</typeparam>
+	/// <param name="sourceEnum">源枚举值</param>
+	/// <param name="index">目标枚举中的索引</param>
+	/// <param name="typeSelector">从 TAttr 中提取目标类型的委托（如 a => a.UnitEnumType）</param>
+	/// <returns>目标枚举中的指定枚举值</returns>
+	public static Enum GetEnumByMappedAttribute<TSource, TAttr>(
+		TSource sourceEnum,
+		int index,
+		Func<TAttr, Type?> typeSelector)
+		where TSource : struct, Enum
+		where TAttr : Attribute {
+		if (!Enum.IsDefined(typeof(TSource), sourceEnum))
+			throw new ArgumentException($"Invalid enum value: {sourceEnum}");
+
+		// 取出源枚举字段的自定义特性
+		var field = typeof(TSource).GetField(sourceEnum.ToString());
+		if (field == null)
+			throw new InvalidOperationException($"Cannot find field for {sourceEnum}");
+
+		var attr = field.GetCustomAttribute<TAttr>();
+		if (attr == null)
+			throw new InvalidOperationException($"{typeof(TSource).Name}.{sourceEnum} has no attribute {typeof(TAttr).Name}");
+
+		// 获取目标枚举类型
+		var targetType = typeSelector(attr);
+		if (targetType == null)
+			throw new InvalidOperationException($"{typeof(TAttr).Name} returned null target type");
+
+		var values = Enum.GetValues(targetType);
+		if (index < 0 || index >= values.Length)
+			throw new IndexOutOfRangeException($"Invalid index {index} for {targetType.Name}");
+
+		return (Enum)values.GetValue(index)!;
+	}
+	/// <summary>
 	/// 泛型通用方法：从源枚举读取特性 TAttr，找到目标枚举类型，
 	/// 再根据目标值获取特性 TDisplay 中的显示名称。
 	/// </summary>

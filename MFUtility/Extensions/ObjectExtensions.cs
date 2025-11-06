@@ -26,6 +26,7 @@ public static class ObjectExtensions {
 		return DeepClone(source);
 	}
 
+
 	/// <summary>
 	/// 浅拷贝（仅复制值类型与引用地址）
 	/// </summary>
@@ -178,6 +179,54 @@ public static class ObjectExtensions {
 				} catch { /* ignore type mismatch */
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// 从源对象复制公共属性到当前对象（忽略类型不兼容或只读属性）
+	/// </summary>
+	/// <typeparam name="TTarget">目标对象类型</typeparam>
+	/// <param name="target">要被赋值的对象</param>
+	/// <param name="source">提供数据的源对象</param>
+	public static TTarget CopyFrom<TTarget>(this TTarget target, object source) {
+		if (target == null || source == null)
+			return target;
+
+		var srcType = source.GetType();
+		var tgtType = typeof(TTarget);
+
+		var srcProps = srcType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		var tgtProps = tgtType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+			.Where(p => p.CanWrite)
+			.ToDictionary(p => p.Name);
+
+		foreach (var srcProp in srcProps) {
+			if (!srcProp.CanRead) continue;
+			if (tgtProps.TryGetValue(srcProp.Name, out var tgtProp)) {
+				try {
+					var value = srcProp.GetValue(source);
+					if (value != null && tgtProp.PropertyType.IsAssignableFrom(srcProp.PropertyType)) {
+						tgtProp.SetValue(target, value);
+					}
+				} catch {
+					// 忽略类型不匹配或写入错误
+				}
+			}
+		}
+
+		return target;
+	}
+
+	/// <summary>
+	/// 尝试将对象安全转换为指定类型
+	/// </summary>
+	public static T? As<T>(this object? obj, T? defaultValue = default) {
+		try {
+			if (obj == null) return defaultValue;
+			if (obj is T variable) return variable;
+			return (T)Convert.ChangeType(obj, typeof(T));
+		} catch {
+			return defaultValue;
 		}
 	}
 }

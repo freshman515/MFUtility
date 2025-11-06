@@ -111,6 +111,27 @@ public static class ServiceProviderExtensions {
 	#region === Register Services ===
 
 	/// <summary>
+	/// 注册开放泛型接口与其实现（如 IRepository&lt;&gt; → Repository&lt;&gt;）
+	/// </summary>
+	public static IServiceCollection AddOpenGeneric(
+		this IServiceCollection services,
+		Type openGenericInterface,
+		Type openGenericImplementation,
+		ServiceLifetime lifetime = ServiceLifetime.Transient) {
+		if (!openGenericInterface.IsGenericTypeDefinition || !openGenericImplementation.IsGenericTypeDefinition)
+			throw new ArgumentException("必须传入开放泛型类型定义，如 typeof(IRepository<>)");
+
+		services.Add(new ServiceDescriptor(openGenericInterface, openGenericImplementation, lifetime));
+		return services;
+	}
+	public static IServiceCollection AddOpenGeneric<TInterface, TImplementation>(
+		this IServiceCollection services,
+		ServiceLifetime lifetime = ServiceLifetime.Transient)
+		where TInterface : class
+		where TImplementation : class {
+		return services.AddOpenGeneric(typeof(TInterface), typeof(TImplementation), lifetime);
+	}
+	/// <summary>
 	/// 批量注册指定程序集中的服务类型（接口+实现 或 自身）
 	/// </summary>
 	public static IServiceCollection AddServicesFromAssembly(
@@ -231,6 +252,17 @@ public static class ServiceProviderExtensions {
 	}
 
 	#endregion
+
+	/// <summary>
+	/// 打印当前 IoC 容器中注册的所有服务（调试用）
+	/// </summary>
+	public static void DumpServices(this IServiceCollection services, bool includeLifetime = true) {
+		Console.WriteLine("🔍 Registered services:");
+		foreach (var s in services) {
+			var lifetime = includeLifetime ? $" [{s.Lifetime}]" : string.Empty;
+			Console.WriteLine($"  {s.ServiceType.FullName} → {s.ImplementationType?.FullName ?? "(factory)"}{lifetime}");
+		}
+	}
 
 	public static bool IsRegistered<T>(this IServiceCollection services) {
 		return services.Any(s => s.ServiceType == typeof(T));

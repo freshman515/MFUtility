@@ -12,4 +12,11 @@
     <cvt:MultiBoolOrConverter x:Key="MultiBoolOrConverter" />
     <cvt:PercentageConverter x:Key="PercentageConverter" />
     <cvt:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+    <cvt:StringToBrushConverter x:Key="StringToBrushConverter" />
+    <cvt:StringToImageConverter x:Key="StringToImageConverter" />
+    <cvt:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+    <cvt:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    <cvt:StringToUpperConverter x:Key="StringToUpperConverter" />
+    <cvt:NumberToVisibilityConverter x:Key="NumberToVisibilityConverter" />
+    <cvt:BoolToColorConverter x:Key="BoolToColorConverter" />
 </ResourceDictionary>

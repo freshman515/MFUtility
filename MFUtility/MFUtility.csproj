@@ -18,7 +18,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.39</Version>
+    <Version>1.0.52</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>

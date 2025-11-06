@@ -7,11 +7,12 @@ using System.Windows.Controls;
 namespace MFUtility.UI.Controls
 {
     /// <summary>
-    /// 💪 WPF Flex 容器（终极版，完全模拟 CSS Flexbox）
-    /// 支持：
-    /// - Flow(Row / Column / Reverse)
+    /// 💪 WPF Flex 容器（增强版：支持嵌套 Flex）
+    /// 模拟 CSS Flexbox：
+    /// - Flow(Row / Column / RowReverse / ColumnReverse)
     /// - Wrap / Gap / JustifyContent / AlignItems / AlignContent
-    /// - FlexGrow / FlexShrink / FlexBasis
+    /// - 支持 FlexGrow / FlexShrink / FlexBasis
+    /// - ✅ 支持嵌套 Flex（子 Flex 自动布局）
     /// </summary>
     public class Flex : Panel
     {
@@ -105,8 +106,10 @@ namespace MFUtility.UI.Controls
             bool isRow = Flow == FlexFlow.Row || Flow == FlexFlow.RowReverse;
             double gap = Gap;
 
-            double maxMain = 0, maxCross = 0;
-            double lineMain = 0, lineCross = 0;
+            double maxMain = 0;
+            double totalCross = 0;
+            double lineMain = 0;
+            double lineCross = 0;
 
             double limitMain = isRow
                 ? (double.IsInfinity(available.Width) ? double.MaxValue : available.Width)
@@ -114,16 +117,19 @@ namespace MFUtility.UI.Controls
 
             foreach (UIElement child in InternalChildren)
             {
-                if (child.Visibility != Visibility.Visible) continue;
+                if (child.Visibility != Visibility.Visible)
+                    continue;
+
+                // 🧩 支持嵌套 Flex：对子 Flex 调用其自身 Measure
                 child.Measure(available);
 
                 double main = isRow ? child.DesiredSize.Width : child.DesiredSize.Height;
                 double cross = isRow ? child.DesiredSize.Height : child.DesiredSize.Width;
 
-                if (Wrap != FlexWrap.NoWrap && lineMain + main + (lineMain > 0 ? gap : 0) > limitMain)
+                if (Wrap != FlexWrap.NoWrap && lineMain > 0 && lineMain + main + gap > limitMain)
                 {
                     maxMain = Math.Max(maxMain, lineMain);
-                    maxCross += lineCross + gap;
+                    totalCross += lineCross + gap;
                     lineMain = 0;
                     lineCross = 0;
                 }
@@ -133,9 +139,9 @@ namespace MFUtility.UI.Controls
             }
 
             maxMain = Math.Max(maxMain, lineMain);
-            maxCross += lineCross;
+            totalCross += lineCross;
 
-            return isRow ? new Size(maxMain, maxCross) : new Size(maxCross, maxMain);
+            return isRow ? new Size(maxMain, totalCross) : new Size(totalCross, maxMain);
         }
 
         #endregion
@@ -145,112 +151,173 @@ namespace MFUtility.UI.Controls
         protected override Size ArrangeOverride(Size final)
         {
             bool isRow = Flow == FlexFlow.Row || Flow == FlexFlow.RowReverse;
+            bool reverse = Flow == FlexFlow.RowReverse || Flow == FlexFlow.ColumnReverse;
+
             double gap = Gap;
             double limitMain = isRow ? final.Width : final.Height;
             double crossLimit = isRow ? final.Height : final.Width;
 
-            // 分行（或列）
+            // === 1) 分行 ===
             List<List<UIElement>> lines = new();
-            List<UIElement> current = new();
-            double cursorMain = 0;
-
-            foreach (UIElement child in InternalChildren)
             {
-                if (child.Visibility != Visibility.Visible)
-                    continue;
-
-                double main = isRow ? child.DesiredSize.Width : child.DesiredSize.Height;
-
-                if (Wrap != FlexWrap.NoWrap && cursorMain + main + (current.Count > 0 ? gap : 0) > limitMain && current.Count > 0)
+                List<UIElement> cur = new();
+                double cursor = 0;
+                foreach (UIElement child in InternalChildren)
                 {
-                    lines.Add(current);
-                    current = new();
-                    cursorMain = 0;
+                    if (child.Visibility != Visibility.Visible) continue;
+                    double main = isRow ? child.DesiredSize.Width : child.DesiredSize.Height;
+
+                    if (Wrap != FlexWrap.NoWrap && cur.Count > 0 &&
+                        cursor + main + gap > limitMain)
+                    {
+                        lines.Add(cur);
+                        cur = new();
+                        cursor = 0;
+                    }
+                    cur.Add(child);
+                    cursor += (cur.Count > 1 ? gap : 0) + main;
                 }
-
-                current.Add(child);
-                cursorMain += main + (current.Count > 1 ? gap : 0);
+                if (cur.Count > 0) lines.Add(cur);
             }
-            if (current.Count > 0)
-                lines.Add(current);
 
-            // cross方向（副轴）总尺寸
-            double totalCross = lines.Sum(l => l.Max(c => isRow ? c.DesiredSize.Height : c.DesiredSize.Width)) +
-                                (lines.Count - 1) * gap;
+            if (reverse) lines.Reverse();
 
-            double crossFree = Math.Max(0, crossLimit - totalCross);
-            double crossOffset = GetAlignContentStartOffset(crossLimit, totalCross, lines.Count, AlignContent, gap);
+            // === 2) Cross 尺寸 ===
+            double[] lineCrossSizes = lines
+                .Select(l => l.Max(c => isRow ? c.DesiredSize.Height : c.DesiredSize.Width))
+                .ToArray();
 
+            double totalCrossUsed = lineCrossSizes.Sum() + gap * Math.Max(0, lines.Count - 1);
+            double crossLead = GetAlignContentLead(crossLimit, totalCrossUsed, lines.Count, AlignContent, gap);
+            double crossCursor = crossLead;
+
+            // === 3) 布局每一行 ===
             foreach (var line in lines)
             {
-                double totalMain = line.Sum(c => isRow ? c.DesiredSize.Width : c.DesiredSize.Height);
-                double totalGrow = line.Sum(GetFlexGrow);
-                double free = Math.Max(0, limitMain - totalMain - gap * (line.Count - 1));
-                double[] spacing = GetJustifySpacings(line.Count, free, gap, JustifyContent);
+                int n = line.Count;
+                double[] mainSizes = new double[n];
+                double[] crossSizes = new double[n];
+                double[] grows = new double[n];
+                double[] shrinks = new double[n];
 
-                double mainCursor = spacing[0];
-                double lineCross = line.Max(c => isRow ? c.DesiredSize.Height : c.DesiredSize.Width);
-
-                for (int i = 0; i < line.Count; i++)
+                for (int i = 0; i < n; i++)
                 {
-                    UIElement child = line[i];
-                    double grow = GetFlexGrow(child);
-                    double main = isRow ? child.DesiredSize.Width : child.DesiredSize.Height;
-                    if (totalGrow > 0) main += free * (grow / totalGrow);
-                    double cross = isRow ? child.DesiredSize.Height : child.DesiredSize.Width;
+                    var c = line[i];
+                    mainSizes[i] = isRow ? c.DesiredSize.Width : c.DesiredSize.Height;
+                    crossSizes[i] = isRow ? c.DesiredSize.Height : c.DesiredSize.Width;
+                    grows[i] = GetFlexGrow(c);
+                    shrinks[i] = GetFlexShrink(c);
+                }
+
+                // === flex-grow / shrink ===
+                double baseTotal = mainSizes.Sum() + gap * Math.Max(0, n - 1);
+                double free0 = limitMain - baseTotal;
+
+                if (free0 > 0)
+                {
+                    double totalGrow = grows.Sum();
+                    if (totalGrow > 0)
+                    {
+                        for (int i = 0; i < n; i++)
+                            mainSizes[i] += free0 * (grows[i] / totalGrow);
+                    }
+                }
+                else if (free0 < 0)
+                {
+                    double overflow = -free0;
+                    double shrinkWeight = 0;
+                    for (int i = 0; i < n; i++)
+                        shrinkWeight += shrinks[i] * Math.Max(0.0001, mainSizes[i]);
+                    if (shrinkWeight > 0)
+                    {
+                        for (int i = 0; i < n; i++)
+                        {
+                            double w = shrinks[i] * Math.Max(0.0001, mainSizes[i]) / shrinkWeight;
+                            mainSizes[i] -= overflow * w;
+                            if (mainSizes[i] < 0) mainSizes[i] = 0;
+                        }
+                    }
+                }
+
+                // === JustifyContent ===
+                double baseTotal2 = mainSizes.Sum() + gap * Math.Max(0, n - 1);
+                double free = Math.Max(0, limitMain - baseTotal2);
+                (double lead, double betweenExtra) = GetJustifyLeadAndBetween(n, free, gap, JustifyContent);
+
+                List<int> order = Enumerable.Range(0, n).ToList();
+                if (reverse) order.Reverse();
+
+                double lineCross = lineCrossSizes[lines.IndexOf(line)];
+                double mainCursor = lead;
+
+                // === 逐项布局 ===
+                for (int k = 0; k < n; k++)
+                {
+                    int i = order[k];
+                    var child = line[i];
+
+                    double main = mainSizes[i];
+                    double cross = crossSizes[i];
                     double alignOffset = GetAlignOffset(lineCross, cross, AlignItems);
 
-                    double x = isRow ? mainCursor : crossOffset + alignOffset;
-                    double y = isRow ? crossOffset + alignOffset : mainCursor;
+                    double x = isRow ? mainCursor : crossCursor + alignOffset;
+                    double y = isRow ? crossCursor + alignOffset : mainCursor;
                     double w = isRow ? main : cross;
                     double h = isRow ? cross : main;
 
+                    if (AlignItems == FlexAlign.Stretch)
+                    {
+                        if (isRow)
+                            h = lineCross;
+                        else
+                            w = lineCross;
+                    }
+
+                    // 🧩 嵌套 Flex：让子容器自由布局
                     child.Arrange(new Rect(x, y, w, h));
-                    mainCursor += main + spacing[Math.Min(i + 1, spacing.Length - 1)];
+
+                    if (k < n - 1)
+                        mainCursor += main + gap + betweenExtra;
                 }
 
-                crossOffset += lineCross + gap;
+                crossCursor += lineCross + gap;
             }
 
             return final;
         }
 
-        private double[] GetJustifySpacings(int count, double free, double gap, FlexJustify mode)
-        {
-            double[] result = new double[count + 1];
-            if (count <= 0) return result;
+        #endregion
 
-            switch (mode)
+        #region === Helper Methods ===
+
+        private static (double lead, double betweenExtra) GetJustifyLeadAndBetween(int count, double free, double gap, FlexJustify mode)
+        {
+            if (count <= 0) return (0, 0);
+            if (count == 1)
             {
-                case FlexJustify.SpaceBetween:
-                    double between = count == 1 ? 0 : free / (count - 1);
-                    for (int i = 1; i < count; i++) result[i] = between;
-                    break;
-                case FlexJustify.SpaceAround:
-                    double around = free / count;
-                    result[0] = around / 2;
-                    for (int i = 1; i <= count; i++) result[i] = around;
-                    break;
-                case FlexJustify.SpaceEvenly:
-                    double evenly = free / (count + 1);
-                    for (int i = 0; i <= count; i++) result[i] = evenly;
-                    break;
-                case FlexJustify.Center:
-                    result[0] = free / 2;
-                    for (int i = 1; i <= count; i++) result[i] = gap;
-                    break;
-                case FlexJustify.End:
-                    result[0] = free;
-                    for (int i = 1; i <= count; i++) result[i] = gap;
-                    break;
-                default:
-                    for (int i = 1; i <= count; i++) result[i] = gap;
-                    break;
+                return mode switch
+                {
+                    FlexJustify.Center => (free / 2, 0),
+                    FlexJustify.End => (free, 0),
+                    FlexJustify.SpaceAround => (free / 2, 0),
+                    FlexJustify.SpaceEvenly => (free / 2, 0),
+                    _ => (0, 0),
+                };
             }
-            return result;
+
+            return mode switch
+            {
+                FlexJustify.Start => (0, 0),
+                FlexJustify.Center => (free / 2, 0),
+                FlexJustify.End => (free, 0),
+                FlexJustify.SpaceBetween => (0, free / (count - 1)),
+                FlexJustify.SpaceAround => (free / (2 * count), free / count),
+                FlexJustify.SpaceEvenly => (free / (count + 1), free / (count + 1)),
+                _ => (0, 0),
+            };
         }
 
-        private double GetAlignOffset(double lineCross, double itemCross, FlexAlign align)
+        private static double GetAlignOffset(double lineCross, double itemCross, FlexAlign align)
         {
             return align switch
             {
@@ -260,9 +327,9 @@ namespace MFUtility.UI.Controls
             };
         }
 
-        private double GetAlignContentStartOffset(double totalCross, double usedCross, int lines, FlexAlign align, double gap)
+        private static double GetAlignContentLead(double crossLimit, double used, int lines, FlexAlign align, double gap)
         {
-            double free = Math.Max(0, totalCross - usedCross);
+            double free = Math.Max(0, crossLimit - used);
             return align switch
             {
                 FlexAlign.Center => free / 2,
