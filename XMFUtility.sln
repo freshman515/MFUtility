@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFUtility.Communication", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationNugetPublisher", "CommunicationNugetPublisher\CommunicationNugetPublisher.csproj", "{D6DDD537-7DC8-42B0-8293-9078A221D8EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test2", "Test2\Test2.csproj", "{3B56ADCB-351D-4B14-9BD5-9D5CD72D800F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{D6DDD537-7DC8-42B0-8293-9078A221D8EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6DDD537-7DC8-42B0-8293-9078A221D8EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6DDD537-7DC8-42B0-8293-9078A221D8EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B56ADCB-351D-4B14-9BD5-9D5CD72D800F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B56ADCB-351D-4B14-9BD5-9D5CD72D800F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B56ADCB-351D-4B14-9BD5-9D5CD72D800F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B56ADCB-351D-4B14-9BD5-9D5CD72D800F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{26D47FC3-2B98-46F2-B8FB-3810E44AE82B} = {C5965DC2-8640-4299-956A-87CE85495F26}

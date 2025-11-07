@@ -18,7 +18,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>MF.Communication</PackageId>
-    <Version>1.0.9</Version>
+    <Version>1.0.13</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>MF.Communication</Product>

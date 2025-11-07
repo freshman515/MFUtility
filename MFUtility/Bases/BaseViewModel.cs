@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace MFUtility.Bases {
-    public class ObservableObject : INotifyPropertyChanged {
+    public class BaseViewModel : INotifyPropertyChanged {
         // PropertyChanged 事件
         public event PropertyChangedEventHandler PropertyChanged;
 
