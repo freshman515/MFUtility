@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageIcon>风车.png</PackageIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>MF.Utility.WPF</PackageId>
+    <Version>1.0.2</Version>
+    <Authors>Mf</Authors>
+    <Company>Mf Studio</Company>
+    <Product>XMF.Utility</Product>
+    <Description>WPF工具库</Description>
+    <PackageIcon>风车.png</PackageIcon>
+    <Title>工具库</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <Page Update="Assets\Styles\DialogStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Assets\Svgs\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\Converters\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DefaultNotificationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ToastWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Fonts\NotoSansSC-Medium.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.0.6" />
+    <PackageReference Include="NLog.Schema" Version="6.0.6" />
+    <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
+    <PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MFUtility.Core\MFUtility.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="C:\Users\22004\.nuget\packages\nlog.schema\6.0.6\contentFiles\any\any\NLog.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

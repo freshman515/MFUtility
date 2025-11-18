@@ -156,124 +156,138 @@ namespace MFUtility.UI.Controls {
 
 		#region === 核心布局逻辑 ===
 
-		private void RebuildLayout()
-{
-    if (!IsLoaded) return;
+		private void RebuildLayout() {
+			if (!IsLoaded) return;
 
-    var (spacingRow, spacingCol) = ParseSpacing(Spacing);
-    double rowSpacing = RowSpacing == 0 ? spacingRow : RowSpacing;
-    double colSpacing = ColumnSpacing == 0 ? spacingCol : ColumnSpacing;
+			var (spacingRow, spacingCol) = ParseSpacing(Spacing);
+			double rowSpacing = RowSpacing == 0 ? spacingRow : RowSpacing;
+			double colSpacing = ColumnSpacing == 0 ? spacingCol : ColumnSpacing;
 
-    RowDefinitions.Clear();
-    ColumnDefinitions.Clear();
+			RowDefinitions.Clear();
+			ColumnDefinitions.Clear();
 
-    if (Uniform)
-    {
-        ApplyUniform();
-        return;
-    }
+			if (Uniform) {
+				ApplyUniform();
+				return;
+			}
 
-    bool hasRows = !string.IsNullOrWhiteSpace(Rows);
-    bool hasCols = !string.IsNullOrWhiteSpace(Columns);
-    int childCount = Children.Count;
+			bool hasRows = !string.IsNullOrWhiteSpace(Rows);
+			bool hasCols = !string.IsNullOrWhiteSpace(Columns);
+			int childCount = Children.Count;
 
-    if (AutoPair)
-    {
-        if (hasCols && !hasRows)
-        {
-            var colDefs = SplitParts(Columns);
-            int colCount = colDefs.Length;
-            int rowCount = (int)Math.Ceiling((double)childCount / colCount);
-            CreateCols(Columns);
-            CreateAutoRows(rowCount);
-        }
-        else if (hasRows && !hasCols)
-        {
-            var rowDefs = SplitParts(Rows);
-            int rowCount = rowDefs.Length;
-            int colCount = (int)Math.Ceiling((double)childCount / rowCount);
-            CreateRows(Rows);
-            CreateAutoColumns(colCount);
-        }
-        else if (!hasRows && !hasCols)
-        {
-            CreateAutoRows(1);
-            CreateAutoColumns(childCount);
-        }
-        else
-        {
-            CreateRows(Rows);
-            CreateCols(Columns);
-        }
-    }
-    else
-    {
-        if (hasRows) CreateRows(Rows);
-        if (hasCols) CreateCols(Columns);
-    }
+			if (AutoPair) {
+				if (hasCols && !hasRows) {
+					var colDefs = SplitParts(Columns);
+					int colCount = colDefs.Length;
+					int rowCount = (int)Math.Ceiling((double)childCount / colCount);
+					CreateCols(Columns);
+					CreateAutoRows(rowCount);
+				} else if (hasRows && !hasCols) {
+					var rowDefs = SplitParts(Rows);
+					int rowCount = rowDefs.Length;
+					int colCount = (int)Math.Ceiling((double)childCount / rowCount);
+					CreateRows(Rows);
+					CreateAutoColumns(colCount);
+				} else if (!hasRows && !hasCols) {
+					CreateAutoRows(1);
+					CreateAutoColumns(childCount);
+				} else {
+					CreateRows(Rows);
+					CreateCols(Columns);
+				}
+			} else {
+				if (hasRows) CreateRows(Rows);
+				if (hasCols) CreateCols(Columns);
+			}
 
-    var list = Children.Cast<UIElement>().ToList();
-    if (Reverse) list.Reverse();
+			var list = Children.Cast<UIElement>().ToList();
+			if (Reverse) list.Reverse();
 
-    int totalRows = RowDefinitions.Count > 0 ? RowDefinitions.Count : 1;
-    int totalCols = ColumnDefinitions.Count > 0 ? ColumnDefinitions.Count : 1;
+			int totalRows = RowDefinitions.Count > 0 ? RowDefinitions.Count : 1;
+			int totalCols = ColumnDefinitions.Count > 0 ? ColumnDefinitions.Count : 1;
 
-    // 🧮 自动填充索引
-    int currentRow = 0;
-    int currentCol = 0;
+			// 🧮 自动填充索引
+			int currentRow = 0;
+			int currentCol = 0;
 
-    foreach (var child in list)
-    {
-        bool hasRow = child.ReadLocalValue(Grid.RowProperty) != DependencyProperty.UnsetValue;
-        bool hasCol = child.ReadLocalValue(Grid.ColumnProperty) != DependencyProperty.UnsetValue;
+			foreach (var child in list) {
+				bool hasRow = child.ReadLocalValue(Grid.RowProperty) != DependencyProperty.UnsetValue;
+				bool hasCol = child.ReadLocalValue(Grid.ColumnProperty) != DependencyProperty.UnsetValue;
 
-        // ✅ 自动分配未定义位置的子项
-        if (!hasRow && !hasCol)
-        {
-            SetRow(child, currentRow);
-            SetColumn(child, currentCol);
-        }
-        else if (!hasRow && hasCol)
-        {
-            SetRow(child, currentRow);
-        }
-        else if (hasRow && !hasCol)
-        {
-            SetColumn(child, currentCol);
-        }
+				// ✅ 自动分配未定义位置的子项
+				if (!hasRow && !hasCol) {
+					SetRow(child, currentRow);
+					SetColumn(child, currentCol);
+				} else if (!hasRow && hasCol) {
+					SetRow(child, currentRow);
+				} else if (hasRow && !hasCol) {
+					SetColumn(child, currentCol);
+				}
 
-        // 获取跨行跨列（默认1）
-        int spanR = Math.Max(1, GetRowSpan(child));
-        int spanC = Math.Max(1, GetColumnSpan(child));
+				// 获取跨行跨列（默认1）
+				int spanR = Math.Max(1, GetRowSpan(child));
+				int spanC = Math.Max(1, GetColumnSpan(child));
 
-        // ✅ 计算下一个位置（考虑跨列）
-        currentCol += spanC;
-        if (currentCol >= totalCols)
-        {
-            currentCol = 0;
-            currentRow++;
-        }
+				// ✅ 计算下一个位置（考虑跨列）
+				currentCol += spanC;
+				if (currentCol >= totalCols) {
+					currentCol = 0;
+					currentRow++;
+				}
 
-        if (child is FrameworkElement fe)
-        {
-            if (fe.ReadLocalValue(HorizontalAlignmentProperty) == DependencyProperty.UnsetValue)
-                fe.HorizontalAlignment = ItemHorizontalAlignment;
-            if (fe.ReadLocalValue(VerticalAlignmentProperty) == DependencyProperty.UnsetValue)
-                fe.VerticalAlignment = ItemVerticalAlignment;
+				if (child is FrameworkElement fe) {
+					// 保持已定义的对齐方式
+					if (fe.ReadLocalValue(HorizontalAlignmentProperty) == DependencyProperty.UnsetValue)
+						fe.HorizontalAlignment = ItemHorizontalAlignment;
+					if (fe.ReadLocalValue(VerticalAlignmentProperty) == DependencyProperty.UnsetValue)
+						fe.VerticalAlignment = ItemVerticalAlignment;
 
-            fe.Margin = new Thickness(colSpacing / 2, rowSpacing / 2, colSpacing / 2, rowSpacing / 2);
-        }
-    }
+					// ✅ 清空外部的 Margin，避免影响外部布局
+					if (fe.ReadLocalValue(MarginProperty) == DependencyProperty.UnsetValue) {
+						// 获取当前行、列和跨行、跨列
+						int row = GetRow(fe);
+						int col = GetColumn(fe);
+						int rowSpan = Math.Max(1, GetRowSpan(fe));
+						int colSpan = Math.Max(1, GetColumnSpan(fe));
 
-    if (DebugLayout)
-    {
-        Debug.WriteLine($"[SmartGrid] {RowDefinitions.Count} rows × {ColumnDefinitions.Count} cols ({Children.Count} children)");
-        foreach (UIElement child in Children)
-        {
-            Debug.WriteLine($"  → {child.GetType().Name} | Row={GetRow(child)}, Col={GetColumn(child)}, RowSpan={GetRowSpan(child)}, ColSpan={GetColumnSpan(child)}");
-        }
-    }
-}
+						// 获取当前 Margin
+						double left = 0;
+						double top = 0;
+						double right = 0;
+						double bottom = 0;
+
+						// 🧩 仅在“内部”添加 Spacing，不影响外边缘
+						// 左列以外 → 左加半个 spacing
+						if (col > 0)
+							left += colSpacing / 2;
+
+						// 非最后一列（考虑跨列） → 右加半个 spacing
+						if (col + colSpan < totalCols)
+							right += colSpacing / 2;
+
+						// 非首行 → 上加半个 spacing
+						if (row > 0)
+							top += rowSpacing / 2;
+
+						// 非最后一行（考虑跨行） → 下加半个 spacing
+						if (row + rowSpan < totalRows)
+							bottom += rowSpacing / 2;
+
+						// 应用计算的 margin
+						fe.Margin = new Thickness(left, top, right, bottom);
+					}
+				}
+			}
+
+			if (DebugLayout) {
+				Debug.WriteLine($"[SmartGrid] {RowDefinitions.Count} rows × {ColumnDefinitions.Count} cols ({Children.Count} children)");
+				foreach (UIElement child in Children) {
+					Debug.WriteLine($"  → {child.GetType().Name} | Row={GetRow(child)}, Col={GetColumn(child)}, RowSpan={GetRowSpan(child)}, ColSpan={GetColumnSpan(child)}");
+				}
+			}
+		}
+
+
 		private void ApplyUniform() {
 			int count = Children.Count;
 			if (count == 0) return;

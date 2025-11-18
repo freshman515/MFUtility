@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -7,48 +8,23 @@ using MFUtility.Notifications.Enums;
 using MFUtility.Views;
 using MFUtility.Win32;
 
+
 namespace MFUtility.Notifications.Services;
 
 public static class ToastService
 {
-	private static readonly Dictionary<(IntPtr monitor, NotifycationPosition pos), List<ToastWindow>> _toastsByPosition = new();
-	private static readonly Dictionary<(IntPtr monitor, NotifycationPosition pos), SemaphoreSlim> _positionLocks = new();
+	private static readonly Dictionary<NotifycationPosition, List<ToastWindow>> _toastsByPosition = new();
+	private static readonly Dictionary<NotifycationPosition, SemaphoreSlim> _positionLocks = new();
 	private static readonly Dictionary<ToastWindow, double> _toastOffsets = new();
 	private const double Gap = 12;
-	private static IntPtr _currentMonitor = IntPtr.Zero;
-
-	#region === 绑定主窗体 ===
-
-	public static void BindToWindow(Window mainWindow)
-	{
-		if (mainWindow == null) return;
-
-		void UpdateLater()
-		{
-			Task.Delay(80).ContinueWith(_ =>
-			{
-				Application.Current.Dispatcher.Invoke(() =>
-				{
-					_currentMonitor = Win32Display.GetMonitorFromWindow(mainWindow.GetHandle());
-				});
-			});
-		}
-
-		mainWindow.SourceInitialized += (_, _) => UpdateLater();
-		mainWindow.LocationChanged += (_, _) => UpdateLater();
-		mainWindow.SizeChanged += (_, _) => UpdateLater();
-	}
-
-	#endregion
 
 	#region === 快捷方法 ===
-
 	public static void ShowSuccess(string message, int staySeconds = 2,
 		NotifycationPosition position = NotifycationPosition.Center,
 		NotificationMode mode = NotificationMode.Stack, Window owner = null)
 		=> Show(message, NotificationType.Success, mode, staySeconds, owner, position);
 
-	public static void ShowError(string message, int staySeconds =2,
+	public static void ShowError(string message, int staySeconds = 2,
 		NotifycationPosition position = NotifycationPosition.Center,
 		NotificationMode mode = NotificationMode.Stack, Window owner = null)
 		=> Show(message, NotificationType.Error, mode, staySeconds, owner, position);
@@ -62,27 +38,18 @@ public static class ToastService
 		NotifycationPosition position = NotifycationPosition.Center,
 		NotificationMode mode = NotificationMode.Stack, Window owner = null)
 		=> Show(message, NotificationType.Info, mode, staySeconds, owner, position);
-
 	#endregion
 
-	public static void Show(string message,
+	public static async void Show(string message,
 		NotificationType status = NotificationType.Success,
 		NotificationMode mode = NotificationMode.Stack,
 		int staySeconds = 4,
 		Window owner = null,
 		NotifycationPosition position = NotifycationPosition.Center)
 	{
-		Application.Current.Dispatcher.Invoke(async () =>
+		await Application.Current.Dispatcher.InvokeAsync(async () =>
 		{
-			var monitor = _currentMonitor;
-			if (monitor == IntPtr.Zero)
-			{
-				var baseWindow = owner ?? Application.Current.MainWindow;
-				monitor = Win32Display.GetMonitorFromWindow(new WindowInteropHelper(baseWindow).Handle);
-				_currentMonitor = monitor;
-			}
-
-			var key = (monitor, position);
+			var key = position;
 
 			if (!_toastsByPosition.TryGetValue(key, out var list))
 				_toastsByPosition[key] = list = new List<ToastWindow>();
@@ -101,7 +68,7 @@ public static class ToastService
 			{
 				Owner = owner ?? Application.Current.MainWindow,
 				Topmost = true,
-				Tag = (monitor, position)
+				Tag = position
 			};
 
 			toast.Show();
@@ -112,7 +79,7 @@ public static class ToastService
 
 			list.Add(toast);
 
-			var (left, top) = CalculatePosition(monitor, position, width, height, mode, list, list.Count - 1);
+			var (left, top) = CalculatePosition(owner, position, width, height, mode, list, list.Count - 1);
 			toast.Left = left;
 			toast.Top = top;
 			_toastOffsets[toast] = top;
@@ -122,15 +89,19 @@ public static class ToastService
 
 			if (mode != NotificationMode.Persistent)
 			{
-				await Task.Delay(staySeconds * 1000);
-				if (toast.IsVisible)
-					await ToastAnimator.PlayCloseAsync(toast, position);
+				try
+				{
+					await Task.Delay(staySeconds * 1000);
+					if (toast.IsVisible && toast.IsLoaded)
+						await ToastAnimator.PlayCloseAsync(toast, position);
+				}
+				catch { /* ignore */ }
 			}
 		});
 	}
 
 	private static (double left, double top) CalculatePosition(
-		IntPtr monitor,
+		Window owner,
 		NotifycationPosition position,
 		double width,
 		double height,
@@ -138,11 +109,10 @@ public static class ToastService
 		List<ToastWindow> list,
 		int index)
 	{
-		var info = Win32Display.GetMonitorInfo(monitor);
-		double screenLeft = info.rcWork.Left;
-		double screenTop = info.rcWork.Top;
-		double screenW = info.rcWork.Width;
-		double screenH = info.rcWork.Height;
+		double screenW = SystemParameters.WorkArea.Width;
+		double screenH = SystemParameters.WorkArea.Height;
+		double screenLeft = SystemParameters.WorkArea.Left;
+		double screenTop = SystemParameters.WorkArea.Top;
 
 		double left = position switch
 		{
@@ -185,32 +155,35 @@ public static class ToastService
 	private static async void ToastClosed(object sender, EventArgs e)
 	{
 		if (sender is not ToastWindow closed) return;
+		var pos = closed.Tag is NotifycationPosition p ? p : NotifycationPosition.Center;
 
-		var key = closed.Tag is ValueTuple<IntPtr, NotifycationPosition> t
-			? t
-			: (IntPtr.Zero, NotifycationPosition.Center);
-
-		if (!_toastsByPosition.TryGetValue(key, out var list) ||
-		    !_positionLocks.TryGetValue(key, out var sem)) return;
+		if (!_toastsByPosition.TryGetValue(pos, out var list) ||
+		    !_positionLocks.TryGetValue(pos, out var sem)) return;
 
 		await sem.WaitAsync();
 		try
 		{
-			list.Remove(closed);
-			_toastOffsets.Remove(closed);
+			if (list.Contains(closed))
+			{
+				list.Remove(closed);
+				_toastOffsets.Remove(closed);
+			}
 
 			if (list.Count == 0) return;
 
-			bool topLayout = IsTopPosition(key.Item2);
+			bool topLayout = IsTopPosition(pos);
 			var moveList = topLayout
 				? list.Where(t => t.Top > closed.Top).OrderBy(t => t.Top).ToList()
 				: list.Where(t => t.Top < closed.Top).OrderByDescending(t => t.Top).ToList();
 
 			foreach (var t2 in moveList)
 			{
+				if (!_toastOffsets.TryGetValue(t2, out var origTop))
+					continue;
+
 				double newTop = topLayout
-					? _toastOffsets[t2] - (closed.ActualHeight + Gap)
-					: _toastOffsets[t2] + (closed.ActualHeight + Gap);
+					? origTop - (closed.ActualHeight + Gap)
+					: origTop + (closed.ActualHeight + Gap);
 
 				_toastOffsets[t2] = newTop;
 				ToastAnimator.PlayDrop(t2, newTop);
@@ -224,8 +197,11 @@ public static class ToastService
 }
 
 
-public static class ToastAnimator {
-	public static void PlayOpen(Window window, NotifycationPosition pos, int duration = 300) {
+
+public static class ToastAnimator
+{
+	public static void PlayOpen(Window window, NotifycationPosition pos, int duration = 300)
+	{
 		if (window == null) return;
 
 		double targetTop = window.Top;
@@ -234,18 +210,23 @@ public static class ToastAnimator {
 		window.Top += fromTop ? -25 : 25;
 		window.Opacity = 0;
 
-		var slide = new DoubleAnimation {
+		var slide = new DoubleAnimation
+		{
 			From = window.Top,
 			To = targetTop,
 			Duration = TimeSpan.FromMilliseconds(duration),
 			EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
 		};
 
-		var fade = new DoubleAnimation {
+		var fade = new DoubleAnimation
+		{
 			From = 0,
 			To = 1,
 			Duration = TimeSpan.FromMilliseconds(duration)
 		};
+
+		slide.Completed += (_, _) => window.Top = targetTop;
+		fade.Completed += (_, _) => window.Opacity = 1;
 
 		window.BeginAnimation(Window.TopProperty, slide);
 		window.BeginAnimation(Window.OpacityProperty, fade);
@@ -253,36 +234,47 @@ public static class ToastAnimator {
 		try { SystemSounds.Asterisk.Play(); } catch { }
 	}
 
-	public static async Task PlayCloseAsync(Window window, NotifycationPosition pos, int duration = 300) {
-		if (window == null) return;
+	public static async Task PlayCloseAsync(Window window, NotifycationPosition pos, int duration = 300)
+	{
+		if (window == null || !window.IsVisible || !window.IsLoaded)
+			return;
 
 		bool toTop = pos.ToString().Contains("Top");
 
-		var fadeOut = new DoubleAnimation {
+		var fadeOut = new DoubleAnimation
+		{
 			From = 1,
 			To = 0,
 			Duration = TimeSpan.FromMilliseconds(duration)
 		};
 
-		var slideOut = new DoubleAnimation {
+		var slideOut = new DoubleAnimation
+		{
 			From = window.Top,
 			To = window.Top + (toTop ? -25 : 25),
 			Duration = TimeSpan.FromMilliseconds(duration),
 			EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
 		};
 
-		var tcs = new TaskCompletionSource<object>();
+		var tcs = new TaskCompletionSource<object?>();
 		fadeOut.Completed += (_, _) => tcs.TrySetResult(null);
 
 		window.BeginAnimation(Window.OpacityProperty, fadeOut);
 		window.BeginAnimation(Window.TopProperty, slideOut);
 
 		await tcs.Task;
-		window.Close();
+
+		if (window.IsVisible)
+			window.Close();
 	}
 
-	public static void PlayDrop(Window window, double newTop) {
-		var anim = new DoubleAnimation {
+	public static void PlayDrop(Window window, double newTop)
+	{
+		if (window == null || !window.IsLoaded)
+			return;
+
+		var anim = new DoubleAnimation
+		{
 			From = window.Top,
 			To = newTop,
 			Duration = TimeSpan.FromMilliseconds(250),
@@ -293,3 +285,4 @@ public static class ToastAnimator {
 		window.BeginAnimation(Window.TopProperty, anim);
 	}
 }
+

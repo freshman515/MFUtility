@@ -137,21 +137,28 @@ public static class ServiceProviderExtensions {
 	public static IServiceCollection AddServicesFromAssembly(
 		this IServiceCollection services,
 		Assembly assembly,
-		ServiceLifetime lifetime = ServiceLifetime.Singleton) {
+		ServiceLifetime lifetime = ServiceLifetime.Singleton,
+		IEnumerable<Type>? ignoreServiceTypes = null
+	) {
+		ignoreServiceTypes ??= Enumerable.Empty<Type>();
+
 		var types = SafeGetTypes(assembly);
 
 		foreach (var implType in types.Where(t => t.IsClass && !t.IsAbstract && !t.Name.Contains("<"))) {
+			// ❌ 如果在忽略列表中 → 跳过
+			if (ignoreServiceTypes.Contains(implType))
+				continue;
+
 			var interfaces = implType.GetInterfaces();
 
 			if (interfaces.Length > 0) {
-				// 注册所有接口（而非仅第一个）
-				foreach (var itf in interfaces)
+				foreach (var itf in interfaces) {
 					services.Add(new ServiceDescriptor(itf, implType, lifetime));
+				}
 			} else {
 				services.Add(new ServiceDescriptor(implType, implType, lifetime));
 			}
 		}
-
 
 		return services;
 	}
@@ -161,9 +168,9 @@ public static class ServiceProviderExtensions {
 	/// </summary>
 	public static IServiceCollection AddServices(
 		this IServiceCollection services,
-		ServiceLifetime lifetime = ServiceLifetime.Singleton) {
+		ServiceLifetime lifetime = ServiceLifetime.Singleton, IEnumerable<Type>? ignoreServiceTypes = null) {
 		var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-		return services.AddServicesFromAssembly(asm, lifetime);
+		return services.AddServicesFromAssembly(asm, lifetime, ignoreServiceTypes);
 	}
 
 	/// <summary>
@@ -171,8 +178,8 @@ public static class ServiceProviderExtensions {
 	/// </summary>
 	public static IServiceCollection AddServicesFrom<T>(
 		this IServiceCollection services,
-		ServiceLifetime lifetime = ServiceLifetime.Singleton) {
-		return services.AddServicesFromAssembly(typeof(T).Assembly, lifetime);
+		ServiceLifetime lifetime = ServiceLifetime.Singleton, IEnumerable<Type>? ignoreServiceTypes = null) {
+		return services.AddServicesFromAssembly(typeof(T).Assembly, lifetime, ignoreServiceTypes);
 	}
 
 	#endregion

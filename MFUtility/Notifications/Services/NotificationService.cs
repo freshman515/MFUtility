@@ -12,19 +12,19 @@ public static class NotificationService
 	private const double Gap = 10;
 
 	#region === 快捷方法 ===
-	public static void ShowSuccess(string title, string content, int staySeconds = 5,
+	public static void ShowSuccess(string title, string content, int staySeconds = 4,
 		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
 		=> Show(title, content, NotificationType.Success, mode, staySeconds, enableBorderColor);
 
-	public static void ShowError(string title, string content, int staySeconds = 5,
+	public static void ShowError(string title, string content, int staySeconds = 4,
 		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
 		=> Show(title, content, NotificationType.Error, mode, staySeconds, enableBorderColor);
 
-	public static void ShowWarning(string title, string content, int staySeconds = 5,
+	public static void ShowWarning(string title, string content, int staySeconds = 4,
 		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
 		=> Show(title, content, NotificationType.Warning, mode, staySeconds, enableBorderColor);
 
-	public static void ShowInfo(string title, string content, int staySeconds = 5,
+	public static void ShowInfo(string title, string content, int staySeconds = 4,
 		NotificationMode mode = NotificationMode.Stack, bool enableBorderColor = true)
 		=> Show(title, content, NotificationType.Info, mode, staySeconds, enableBorderColor);
 	#endregion

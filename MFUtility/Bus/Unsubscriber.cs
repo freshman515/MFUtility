@@ -1,14 +1,13 @@
 ﻿namespace MFUtility.Bus;
 
-internal sealed class Unsubscriber : IDisposable {
-		private readonly Action _unsubscribe;
-		private bool _disposed;
+public sealed class Unsubscriber : IDisposable
+{
+    private readonly Action _dispose;
 
-		public Unsubscriber(Action unsubscribe) => _unsubscribe = unsubscribe;
+    public Unsubscriber(Action dispose)
+    {
+        _dispose = dispose;
+    }
 
-		public void Dispose() {
-			if (_disposed) return;
-			_unsubscribe();
-			_disposed = true;
-		}
-	}
+    public void Dispose() => _dispose();
+}

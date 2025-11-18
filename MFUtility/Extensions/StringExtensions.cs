@@ -31,8 +31,8 @@ namespace MFUtility.Extensions;
 public static class StringExtensions {
     #region 🧩 判空与安全访问
 
-	public static bool IsNullOrEmpty(this string? value) =>
-		string.IsNullOrEmpty(value);
+	// public static bool IsNullOrEmpty(this string? value) =>
+	// 	string.IsNullOrEmpty(value);
 
 	public static bool IsNullOrWhiteSpace(this string? value) =>
 		string.IsNullOrWhiteSpace(value);
@@ -93,7 +93,7 @@ public static class StringExtensions {
     #region 🔍 匹配与提取
 
 	public static bool IsEmail(this string value) =>
-		Regex.IsMatch(value ?? "", @"^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,4}$");
+		Regex.IsMatch(value ?? "", @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
 	public static bool IsMatch(this string input, string pattern) =>
 		Regex.IsMatch(input ?? "", pattern);

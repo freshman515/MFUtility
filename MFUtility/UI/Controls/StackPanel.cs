@@ -89,6 +89,43 @@ namespace MFUtility.UI.Controls
             DependencyProperty.Register(nameof(ItemHeight), typeof(double), typeof(StackPanel),
                 new PropertyMetadata(double.NaN, OnLayoutChanged));
 
+        // 新增四个 Margin 相关的依赖属性
+        public double MarginTop
+        {
+            get => (double)GetValue(MarginTopProperty);
+            set => SetValue(MarginTopProperty, value);
+        }
+        public static readonly DependencyProperty MarginTopProperty =
+            DependencyProperty.Register(nameof(MarginTop), typeof(double), typeof(StackPanel),
+                new PropertyMetadata(0.0, OnLayoutChanged));
+
+        public double MarginLeft
+        {
+            get => (double)GetValue(MarginLeftProperty);
+            set => SetValue(MarginLeftProperty, value);
+        }
+        public static readonly DependencyProperty MarginLeftProperty =
+            DependencyProperty.Register(nameof(MarginLeft), typeof(double), typeof(StackPanel),
+                new PropertyMetadata(0.0, OnLayoutChanged));
+
+        public double MarginRight
+        {
+            get => (double)GetValue(MarginRightProperty);
+            set => SetValue(MarginRightProperty, value);
+        }
+        public static readonly DependencyProperty MarginRightProperty =
+            DependencyProperty.Register(nameof(MarginRight), typeof(double), typeof(StackPanel),
+                new PropertyMetadata(0.0, OnLayoutChanged));
+
+        public double MarginBottom
+        {
+            get => (double)GetValue(MarginBottomProperty);
+            set => SetValue(MarginBottomProperty, value);
+        }
+        public static readonly DependencyProperty MarginBottomProperty =
+            DependencyProperty.Register(nameof(MarginBottom), typeof(double), typeof(StackPanel),
+                new PropertyMetadata(0.0, OnLayoutChanged));
+
         #endregion
 
         private static void OnLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -121,9 +158,9 @@ namespace MFUtility.UI.Controls
                 // ✅ 应用间距序列
                 double gap = (i < spacingValues.Length ? spacingValues[i] : spacingValues.LastOrDefault());
                 if (Orientation == Orientation.Horizontal)
-                    fe.Margin = new Thickness(0, 0, (i == count - 1 ? 0 : gap), 0);
+                    fe.Margin = new Thickness(MarginLeft, MarginTop, (i == count - 1 ? MarginRight : gap), MarginBottom);
                 else
-                    fe.Margin = new Thickness(0, 0, 0, (i == count - 1 ? 0 : gap));
+                    fe.Margin = new Thickness(MarginLeft, MarginTop, MarginRight, (i == count - 1 ? MarginBottom : gap));
 
                 // ✅ 统一宽高（若设置）
                 if (!double.IsNaN(itemW) && itemW > 0)

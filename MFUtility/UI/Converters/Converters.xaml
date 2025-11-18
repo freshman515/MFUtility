@@ -19,4 +19,6 @@
     <cvt:StringToUpperConverter x:Key="StringToUpperConverter" />
     <cvt:NumberToVisibilityConverter x:Key="NumberToVisibilityConverter" />
     <cvt:BoolToColorConverter x:Key="BoolToColorConverter" />
+    <cvt:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+    <cvt:BoolToStringConverter x:Key="BoolToStringConverter" />
 </ResourceDictionary>

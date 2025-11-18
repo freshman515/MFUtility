@@ -9,11 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MFUtility\MFUtility.csproj" />
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+      <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+      <Folder Include="Assets\Svgs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MFUtility.Core\MFUtility.Core.csproj" />
+      <ProjectReference Include="..\MFUtility.WPF\MFUtility.WPF.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,215 @@
+﻿<Window x:Class="MFUtility.WPF.Views.ToastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ToastWindow"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        FontFamily="Microsoft YaHei"
+        ShowActivated="False">
+    <Window.Resources>
+        <!-- ✅ 右侧（成功） -->
+        <SolidColorBrush x:Key="RightBackBrush" Color="#F0F8EB" />
+        <SolidColorBrush x:Key="RightMainBrush" Color="#76B04C" />
+
+        <!-- ❌ 错误 -->
+        <SolidColorBrush x:Key="ErrorBackBrush" Color="#FDF2EE" />
+        <SolidColorBrush x:Key="ErrorMainBrush" Color="#DB8A7D" />
+
+        <!-- ⚠ 提示 -->
+        <SolidColorBrush x:Key="HintBackBrush" Color="#FBF7EB" />
+        <SolidColorBrush x:Key="HintMainBrush" Color="#E3A64F" />
+
+        <!-- ℹ 信息 -->
+        <SolidColorBrush x:Key="InfoBackBrush" Color="#E8F3FC" />
+        <SolidColorBrush x:Key="InfoMainBrush" Color="#3A7BD5" />
+        <DrawingGroup x:Key="ErrorIcon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <DrawingGroup>
+                <DrawingGroup.ClipGeometry>
+                    <RectangleGeometry Rect="0,0,1097,1024" />
+                </DrawingGroup.ClipGeometry>
+                <GeometryDrawing Brush="{StaticResource ErrorMainBrush}">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry FillRule="Nonzero"
+                                      Figures="M476.282308,0C213.271094,0 0.042698,213.431156 1.1E-05,476.762516 -0.042676,740.093876 213.132363,953.546375 476.143577,953.663763 739.154791,953.781151 952.447216,740.360666 952.575275,477.039977A476.570428,476.570428,0,0,0,476.282308,0.021343z M720.511579,661.401809A43.614657,43.614657,0,0,1,689.564062,735.601151A43.166451,43.166451,0,0,1,658.797961,722.795281L475.866117,538.838968 290.063624,722.165659A43.123765,43.123765,0,0,1,259.510954,734.779441A43.625328,43.625328,0,0,1,229.161044,660.366668L414.974208,477.039977 231.423414,291.013381A43.817416,43.817416,0,1,1,293.318449,229.01163L476.869243,415.027554 662.693079,231.700863A43.817416,43.817416,0,0,1,724.588114,293.702614L537.835853,478.480637z M720.511579,661.401809" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+        <DrawingGroup x:Key="RightIcon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <DrawingGroup>
+                <DrawingGroup.ClipGeometry>
+                    <RectangleGeometry Rect="0,0,1024,1024" />
+                </DrawingGroup.ClipGeometry>
+                <GeometryDrawing Brush="{StaticResource RightMainBrush}">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry FillRule="Nonzero"
+                                      Figures="M512,22C241.38,22 22,241.38 22,512 22,782.62 241.38,1002 512,1002 782.62,1002 1002,782.62 1002,512 1002,241.38 782.62,22 512,22z M771.66,391.85L481.12,682.38C467.25,696.25,444.76,696.25,430.89,682.38L252.34,503.83C238.47,489.96 238.47,467.47 252.34,453.6 266.21,439.73 288.7,439.73 302.57,453.6L456.01,607.04 721.43,341.62C735.3,327.75 757.79,327.75 771.66,341.62 785.53,355.49 785.53,377.98 771.66,391.85z" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+        <DrawingGroup x:Key="InfoIcon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <DrawingGroup>
+                <DrawingGroup.ClipGeometry>
+                    <RectangleGeometry Rect="0,0,1024,1024" />
+                </DrawingGroup.ClipGeometry>
+                <GeometryDrawing Brush="#FF059DFF">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry FillRule="Nonzero"
+                                      Figures="M512,72.96A439.1424,439.1424,0,1,0,951.1424,512A439.6544,439.6544,0,0,0,512,72.96z M481.28,323.1744A30.72,30.72,0,0,1,542.72,323.1744L542.72,572.928A30.72,30.72,0,0,1,481.28,572.928z M512,720.2304A35.4816,35.4816,0,1,1,547.4816,684.8A35.4304,35.4304,0,0,1,512,720.2304z" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+        <DrawingGroup x:Key="HintIcon" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+            <DrawingGroup>
+                <DrawingGroup.ClipGeometry>
+                    <RectangleGeometry Rect="0,0,1024,1024" />
+                </DrawingGroup.ClipGeometry>
+                <GeometryDrawing Brush="{StaticResource HintMainBrush}">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry FillRule="Nonzero"
+                                      Figures="M512,0.44544C229.47712,0.44544 0.44544,229.47712 0.44544,512.00256 0.44544,794.52416 229.47712,1023.55456 512,1023.55456 794.52288,1023.55456 1023.55456,794.52288 1023.55456,512.00256 1023.55456,229.47712 794.52288,0.44544 512,0.44544z M512,900.78336C464.91264,900.78336 426.74048,861.36704 426.74048,812.74752 426.74048,764.128 464.91264,724.7104 512,724.7104 559.0848,724.7104 597.25696,764.12672 597.25696,812.74752 597.25696,861.36832 559.08608,900.78336 512,900.78336z M578.2016,583.85536C578.2016,632.47616,551.25632,671.88992,518.01856,671.88992L505.98272,671.88992C472.74368,671.88992,445.79968,632.47616,445.79968,583.85536L409.6896,231.71584C409.6896,183.09504,436.6336,143.68384,469.87136,143.68384L554.12864,143.68384C587.36768,143.68384,614.31168,183.09632,614.31168,231.71584L578.2016,583.85536z" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingGroup>
+
+    </Window.Resources>
+
+
+    <Grid>
+        <ContentControl>
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Status, RelativeSource={RelativeSource AncestorType=Window}}"
+                                     Value="Success">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Border MinWidth="200" MinHeight="35" Padding="5"
+                                                Background="{StaticResource RightBackBrush}"
+                                                BorderThickness="1.5"
+                                                BorderBrush="{StaticResource RightMainBrush}"
+                                                CornerRadius="6">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Image Width="25" Height="25">
+                                                    <Image.Source>
+                                                        <DrawingImage Drawing="{StaticResource RightIcon}" />
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Margin="20,0,20,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="17"
+                                                           Text="{Binding Message, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                           Foreground="{StaticResource RightMainBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- ❌ 错误 -->
+                        <DataTrigger Binding="{Binding Status, RelativeSource={RelativeSource AncestorType=Window}}"
+                                     Value="Error">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Border MinWidth="200" MinHeight="35" Padding="5"
+                                                Background="{StaticResource ErrorBackBrush}"
+                                                BorderThickness="1.5"
+                                                BorderBrush="{StaticResource ErrorMainBrush}"
+                                                CornerRadius="6">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Image Width="25" Height="25">
+                                                    <Image.Source>
+                                                        <DrawingImage Drawing="{StaticResource ErrorIcon}" />
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Margin="20,0,20,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="17"
+                                                           Text="{Binding Message, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                           Foreground="{StaticResource ErrorMainBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- ⚠ 提示 -->
+                        <DataTrigger Binding="{Binding Status, RelativeSource={RelativeSource AncestorType=Window}}"
+                                     Value="Warning">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Border MinWidth="200" MinHeight="35" Padding="5"
+                                                Background="{StaticResource HintBackBrush}"
+                                                BorderThickness="1.5"
+                                                BorderBrush="{StaticResource HintMainBrush}"
+                                                CornerRadius="6">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Image Width="25" Height="25">
+                                                    <Image.Source>
+                                                        <DrawingImage Drawing="{StaticResource HintIcon}" />
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Margin="20,0,20,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="17"
+                                                           Text="{Binding Message, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                           Foreground="{StaticResource HintMainBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <!-- 信息 -->
+                        <DataTrigger Binding="{Binding Status, RelativeSource={RelativeSource AncestorType=Window}}"
+                                     Value="Info">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <Border MinWidth="200" MinHeight="35" Padding="5"
+                                                Background="{StaticResource InfoBackBrush}"
+                                                BorderThickness="1.5"
+                                                BorderBrush="{StaticResource InfoMainBrush}"
+                                                CornerRadius="6">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Image Width="25" Height="25">
+                                                    <Image.Source>
+                                                        <DrawingImage Drawing="{StaticResource InfoIcon}" />
+                                                    </Image.Source>
+                                                </Image>
+                                                <TextBlock Margin="20,0,20,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="17"
+                                                           Text="{Binding Message, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                           Foreground="{StaticResource InfoMainBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </Grid>
+</Window>

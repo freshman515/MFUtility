@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="DialogInfoBrush" Color="#2D9CDB" />
+    <SolidColorBrush x:Key="DialogSuccessBrush" Color="#27AE60" />
+    <SolidColorBrush x:Key="DialogWarningBrush" Color="#F2C94C" />
+    <SolidColorBrush x:Key="DialogErrorBrush" Color="#EB5757" />
+
+    <Style x:Key="DialogTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,10,0,10" />
+    </Style>
+
+</ResourceDictionary>

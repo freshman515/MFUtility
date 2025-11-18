@@ -1,13 +1,15 @@
 ﻿namespace MFUtility.Bus;
 
-	public sealed class Subscription {
-		public Delegate Handler { get; }
-		public bool Once { get; }
-		public bool OnUiThread { get; }
+public sealed class Subscription
+{
+    public Action<object[]> Handler { get; }
+    public bool Once { get; }
+    public bool OnUiThread { get; } // 参数保留，不再派发 UI
 
-		public Subscription(Delegate handler, bool once, bool ui) {
-			Handler = handler;
-			Once = once;
-			OnUiThread = ui;
-		}
-	}
+    public Subscription(Action<object[]> handler, bool once, bool onUiThread)
+    {
+        Handler = handler;
+        Once = once;
+        OnUiThread = onUiThread;
+    }
+}

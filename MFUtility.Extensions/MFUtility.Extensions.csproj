@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- NuGet 包配置 -->
+    <PackageId>MF.Utility.Extensions</PackageId>
+    <Version>1.0.2</Version>
+    <Authors>Mf</Authors>
+    <Company>Mf Studio</Company>
+    <Product>XMF.Utility</Product>
+    <Description>公共的扩展方法库</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- 包图标 -->
+    <PackageIcon>风车.png</PackageIcon>
+    <!-- 防止 NU5026 错误 -->
+    <ContinueOnError>WarnAndContinue</ContinueOnError>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+  <!-- 打包图标 -->
+  <ItemGroup>
+    <!-- 只保留这一项即可，遵循 NuGet 标准写法 -->
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>
