@@ -1,12 +1,15 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
 public class NullToVisibilityConverter : IValueConverter
 {
+    private static readonly NullToVisibilityConverter _instance = new();
+    
+    public static NullToVisibilityConverter Instance => _instance;
+
     public bool Inverse { get; set; }
     public bool CollapseWhenHidden { get; set; } = true;
 

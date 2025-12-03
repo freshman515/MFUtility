@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Media;
 
 namespace MFUtility.Extensions;
 
@@ -31,8 +31,8 @@ namespace MFUtility.Extensions;
 public static class StringExtensions {
     #region 🧩 判空与安全访问
 
-	// public static bool IsNullOrEmpty(this string? value) =>
-	// 	string.IsNullOrEmpty(value);
+	public static bool IsNullOrEmpty(this string? value) =>
+		string.IsNullOrEmpty(value);
 
 	public static bool IsNullOrWhiteSpace(this string? value) =>
 		string.IsNullOrWhiteSpace(value);
@@ -323,31 +323,6 @@ public static class StringExtensions {
 			return result;
 
 		return null;
-	}
-	public static Brush ToBrush(this string hex) {
-		if (!hex.StartsWith("#"))
-			hex = "#" + hex;
-
-		var color = (Color)ColorConverter.ConvertFromString(hex);
-
-		return new SolidColorBrush(color);
-	}
-	public static Color ToColor(this string hex) {
-		if (!hex.StartsWith("#"))
-			hex = "#" + hex;
-
-		var color = (Color)ColorConverter.ConvertFromString(hex);
-
-		return color;
-	}
-
-	/// <summary>
-	/// 将 Color 转换为十六进制字符串（#RRGGBB 或 #AARRGGBB）
-	/// </summary>
-	public static string ToHex(this Color color, bool includeAlpha = false) {
-		return includeAlpha
-			? $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}"
-			: $"#{color.R:X2}{color.G:X2}{color.B:X2}";
 	}
 	/// <summary>
 	/// 根据 {key} 模板占位符替换内容。

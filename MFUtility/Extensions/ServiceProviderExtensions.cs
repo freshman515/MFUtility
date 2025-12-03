@@ -8,24 +8,6 @@ namespace MFUtility.Extensions;
 /// IoC 容器批量注册 View / ViewModel / Service 的辅助扩展
 /// </summary>
 public static class ServiceProviderExtensions {
-	#region === CreateView with Auto-ViewModel Binding ===
-
-	/// <summary>
-	/// 创建一个 View 并自动绑定对应的 ViewModel（根据命名约定）
-	/// </summary>
-	public static TView CreateView<TView>(this IServiceProvider sp)
-		where TView : FrameworkElement, new() {
-		var view = new TView();
-		var vmType = ResolveViewModelType(typeof(TView));
-
-		if (vmType != null) {
-			// 从容器获取或自动构造
-			var vm = sp.GetService(vmType) ?? ActivatorUtilities.CreateInstance(sp, vmType);
-			view.DataContext = vm;
-		}
-
-		return view;
-	}
 
 	private static Type? ResolveViewModelType(Type viewType) {
 		var fullName = viewType.FullName;
@@ -66,7 +48,6 @@ public static class ServiceProviderExtensions {
 		return vmType ?? Assembly.GetEntryAssembly()?.GetType(finalName);
 	}
 
-	#endregion
 
 	#region === Register ViewModels ===
 
@@ -283,14 +264,6 @@ public static class ServiceProviderExtensions {
 		}
 	}
 
-	public static TWindow CreateWindow<TWindow>(this IServiceProvider sp)
-		where TWindow : Window, new() {
-		var window = new TWindow();
-		var vmType = ResolveViewModelType(typeof(TWindow));
-		if (vmType != null)
-			window.DataContext = sp.GetService(vmType) ?? ActivatorUtilities.CreateInstance(sp, vmType);
-		return window;
-	}
 
 	public static object CreateInstance(this IServiceProvider sp, Type type) {
 		return ActivatorUtilities.CreateInstance(sp, type);

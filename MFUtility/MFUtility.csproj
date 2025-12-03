@@ -68,6 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Page Remove="Assets\Svgs\HintIcons\**" />
+    <Page Update="UI\Converters\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Assets\Fonts\NotoSansSC-Medium.ttf" />
@@ -75,6 +80,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 </Project>

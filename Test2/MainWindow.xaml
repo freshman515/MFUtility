@@ -7,14 +7,17 @@
         xmlns:mf="https://schemas.mfutility.dev/wpf"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         mc:Ignorable="d"
+        xmlns:cv="https://schemas.mfutility.converters.dev/wpf"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
     <mf:Grid Columns="* *" ColumnSpacing="10">
         <mf:StackPanel MarginTop="10">
-            <Button Command="{Binding Test1Command}" Content="Test1" />
+            <Button Background="{Binding Color,Converter={x:Static cv:BoolToBrushConverter.Instance},ConverterParameter='#ff0000,#00ff00'}"
+                    Command="{Binding Test1Command}" Content="Test1" />
         </mf:StackPanel>
         <TextBlock Text="Hello" mf:ClickHelper.ClickCommand="{Binding Test1Command}" />
+        <ListBox ItemsSource="{Binding Users}"></ListBox>
     </mf:Grid>
 </Window>

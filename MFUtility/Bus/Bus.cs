@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Newtonsoft.Json;
-
+ 
 namespace MFUtility.Bus;
 
 public static class Bus {

@@ -4,7 +4,12 @@ using System.Windows.Data;
 
 namespace MFUtility.WPF.UI.Converters;
 
-public class BoolToColorConverter : IValueConverter {
+public class BoolToColorConverter : IValueConverter
+{
+    private static readonly BoolToColorConverter _instance = new();
+    
+    public static BoolToColorConverter Instance => _instance;
+
 	public Brush TrueBrush { get; set; } = Brushes.Green;
 	public Brush FalseBrush { get; set; } = Brushes.Gray;
 

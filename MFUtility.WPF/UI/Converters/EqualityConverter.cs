@@ -5,6 +5,9 @@ namespace MFUtility.WPF.UI.Converters;
 
 public class EqualityConverter : IValueConverter
 {
+    private static readonly EqualityConverter _instance = new();
+    
+    public static EqualityConverter Instance => _instance;
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         => Equals(value, parameter);
 

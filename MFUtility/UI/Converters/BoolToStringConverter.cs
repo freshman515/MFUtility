@@ -1,9 +1,13 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
-public class BoolToStringConverter : IValueConverter {
+public class BoolToStringConverter : IValueConverter
+{
+    private static readonly BoolToStringConverter _instance = new();
+    
+    public static BoolToStringConverter Instance => _instance;
 
 	/// <summary>
 	/// 将 bool 转换成字符串

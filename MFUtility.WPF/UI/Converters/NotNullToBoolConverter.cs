@@ -5,6 +5,10 @@ namespace MFUtility.WPF.UI.Converters;
 
 public class NotNullToBoolConverter : IValueConverter
 {
+    private static readonly NotNullToBoolConverter _instance = new();
+    
+    public static NotNullToBoolConverter Instance => _instance;
+
     public bool Inverse { get; set; }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

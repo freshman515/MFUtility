@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Core.Model;
+﻿namespace MFUtility.Core.Base;
 
 public class ApiResponse {
 	/// <summary>

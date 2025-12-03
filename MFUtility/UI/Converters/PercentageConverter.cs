@@ -1,11 +1,14 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
 public class PercentageConverter : IValueConverter
 {
+    private static readonly PercentageConverter _instance = new();
+    
+    public static PercentageConverter Instance => _instance;
+
     public double Factor { get; set; } = 1.0;
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

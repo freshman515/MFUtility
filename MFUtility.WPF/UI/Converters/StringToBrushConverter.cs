@@ -11,6 +11,10 @@ namespace MFUtility.WPF.UI.Converters
     [ValueConversion(typeof(string), typeof(Brush))]
     public class StringToBrushConverter : IValueConverter
     {
+        private static readonly StringToBrushConverter _instance = new();
+        
+        public static StringToBrushConverter Instance => _instance;
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)

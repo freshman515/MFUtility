@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MFUtility.Extensions;
 
-public static class CollectionExtensions {
+public static class EnumerableExtensions {
     #region 🔹 基础迭代与判断
 
 	public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) {
@@ -251,6 +251,7 @@ public static class CollectionExtensions {
 		var rng = seed.HasValue ? new Random(seed.Value) : new Random();
 		return list[rng.Next(list.Count)];
 	}
+	public static bool HadItems<T>(this IEnumerable<T> values) => values != null && values.Any<T>();
 
     #endregion
 }

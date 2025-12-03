@@ -4,14 +4,19 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
 /// <summary>
 /// 将字符串（文件路径、URL、Base64）转换为 ImageSource。
 /// 支持本地路径、网络地址、Base64 图片。
 /// </summary>
 [ValueConversion(typeof(string), typeof(ImageSource))]
-public class StringToImageConverter : IValueConverter {
+public class StringToImageConverter : IValueConverter
+{
+    private static readonly StringToImageConverter _instance = new();
+    
+    public static StringToImageConverter Instance => _instance;
+
 	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 		if (value == null) return null;
 		string str = value.ToString() ?? string.Empty;

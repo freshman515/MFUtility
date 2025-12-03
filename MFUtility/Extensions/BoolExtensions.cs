@@ -3,8 +3,7 @@ using System.Diagnostics;
 
 namespace MFUtility.Extensions;
 
-public static class BoolExtensions
-{
+public static class BoolExtensions {
     public static string ToYesNo(this bool value) => value ? "Yes" : "No";
 
     public static string ToChineseYesNo(this bool value) => value ? "是" : "否";

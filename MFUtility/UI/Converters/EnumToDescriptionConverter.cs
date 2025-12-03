@@ -1,13 +1,16 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
 public class EnumToDescriptionConverter : IValueConverter
 {
+    private static readonly EnumToDescriptionConverter _instance = new();
+    
+    public static EnumToDescriptionConverter Instance => _instance;
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value == null) return string.Empty;

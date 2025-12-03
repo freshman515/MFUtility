@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -30,8 +31,8 @@ namespace MFUtility.Extensions;
 public static class StringExtensions {
     #region 🧩 判空与安全访问
 
-	// public static bool IsNullOrEmpty(this string? value) =>
-	// 	string.IsNullOrEmpty(value);
+	public static bool IsNullOrEmpty(this string? value) =>
+		string.IsNullOrEmpty(value);
 
 	public static bool IsNullOrWhiteSpace(this string? value) =>
 		string.IsNullOrWhiteSpace(value);

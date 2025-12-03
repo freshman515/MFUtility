@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace MFUtility.UI.Converters
+namespace MFUtility.WPF.UI.Converters
 {
     /// <summary>
     /// 将字符串（例如 "#FF0000" 或 "Red"）转换为 Brush。
@@ -11,6 +11,10 @@ namespace MFUtility.UI.Converters
     [ValueConversion(typeof(string), typeof(Brush))]
     public class StringToBrushConverter : IValueConverter
     {
+        private static readonly StringToBrushConverter _instance = new();
+        
+        public static StringToBrushConverter Instance => _instance;
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)

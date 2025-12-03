@@ -1,12 +1,15 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace MFUtility.UI.Converters;
+namespace MFUtility.WPF.UI.Converters;
 
 public class BoolToVisibilityConverter : IValueConverter
 {
+    private static readonly BoolToVisibilityConverter _instance = new();
+    
+    public static BoolToVisibilityConverter Instance => _instance;
+
     public bool Inverse { get; set; }
     public bool CollapseWhenFalse { get; set; } = true;
 
