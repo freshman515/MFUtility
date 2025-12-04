@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Logging;
+﻿namespace MFUtility.Logging.Enums;
 
 public enum LogLevel {
 	Debug,

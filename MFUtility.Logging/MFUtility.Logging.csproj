@@ -1,9 +1,36 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>
+            net470;
+            net471;
+            net472;
+            net48;
+            net481;
+            net8.0
+        </TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>10</LangVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>MF.Utility.Logging</PackageId>
+    <Authors>Mf</Authors>
+    <Company>Mf Studio</Company>
+    <Product>XMF.Utility</Product>
+    <Description>日志库</Description>
+    <PackageIcon>风车.png</PackageIcon>
+    <Title>日志</Title>
+    <Version>1.0.6</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.Threading.Channels" Version="10.0.0" />
+  </ItemGroup>
 </Project>

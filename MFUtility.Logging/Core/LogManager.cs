@@ -1,47 +1,52 @@
 ﻿using System.Runtime.CompilerServices;
+using MFUtility.Logging.Configs;
+using MFUtility.Logging.Enums;
+using MFUtility.Logging.Interfaces;
+using MFUtility.Logging.Providers;
+using MFUtility.Logging.Tools;
 
 namespace MFUtility.Logging;
 
 public class LogManager {
-	private static ILogProvider? _provider;
-	public static LogOptions Options { get; } = new();
-	static LogManager() {
+	private static readonly List<ILogProvider> _providers = new();
+	private static bool _initialized = false;
+	public static LogConfiguration Config { get; } = new();
+	public static LogBuilder Configure() {
+		return new LogBuilder();
+	}
+	//=====================================
+	// 初始化
+	//=====================================
+	public static void Initialize(Action<LogConfiguration>? configure = null) {
+		if (_initialized)
+			return;
+		configure?.Invoke(Config);
+
 #if DEBUG
-		Options.OutputToConsole = true;
-#else
-		Options.OutputToConsole = false;
+		Config.Output.ToConsole = true;
 #endif
+
+
+
+
+		// if (Config.Json.InheritFromFile) {
+		// 	Config.Json.UseDateFolder = Config.Output.UseDateFolder;
+		// 	Config.Json.SplitDaily = Config.Output.SplitDaily;
+		// 	Config.Json.RootDirectory ??= Path.Combine(Config.Output.RootDirectory!, "json");
+		// }
+
+		var fileProvider = FileLogProvider.Instance;
+
+		AddProvider(fileProvider);
+
+		_initialized = true;
 	}
-	/// <summary>
-	/// 设置外部日志实现，如果不设置则使用默认文件日志
-	/// </summary>
-	public static void SetProvider(ILogProvider provider) {
-		_provider = provider;
+	public static void AddProvider(ILogProvider provider) {
+		if (!_providers.Contains(provider))
+			_providers.Add(provider);
 	}
-	internal static (string? assembly, string? className, int? line) GetCallerInfo() {
-		if (!Options.IncludeAssembly && !Options.IncludeClassName && !Options.IncludeLineNumber)
-			return (null, null, null);
 
-		// 使用 Caller 信息，比 StackTrace 快
-		var frame = new System.Diagnostics.StackTrace(2, true).GetFrame(0);
-
-		string? asm = null;
-		string? cls = null;
-		int? line = null;
-
-		var method = frame?.GetMethod();
-
-		if (Options.IncludeAssembly)
-			asm = method?.Module?.Assembly?.GetName()?.Name;
-
-		if (Options.IncludeClassName)
-			cls = method?.DeclaringType?.FullName;
-
-		if (Options.IncludeLineNumber)
-			line = frame?.GetFileLineNumber();
-
-		return (asm, cls, line);
-	}
+	public static void ClearProviders() => _providers.Clear();
 
 
 	public static void Log(
@@ -51,16 +56,17 @@ public class LogManager {
 		string? callerFile,
 		string? callerMember,
 		int callerLine) {
+		if (!_initialized)
+			Initialize(); // 自动加载配置 + provider
 		var caller = new CallerInfo {
 			File = callerFile,
 			Member = callerMember,
 			Line = callerLine
 		};
-
-		if (_provider == null)
-			FileLogProvider.Instance.Log(level, message, ex, caller);
-		else
-			_provider.Log(level, message, ex, caller);
+		var info = LogFormatter.BuildCallerData(caller);
+		
+		foreach (var provider in _providers)
+			provider.Log(level, message, ex, info);
 	}
 
 	// Convenience methods

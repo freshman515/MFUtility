@@ -15,7 +15,7 @@
     <PackageIcon>风车.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>MF.Utility.WPF</PackageId>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>
