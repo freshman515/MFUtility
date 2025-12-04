@@ -29,11 +29,7 @@ public class LogManager {
 
 
 
-		// if (Config.Json.InheritFromFile) {
-		// 	Config.Json.UseDateFolder = Config.Output.UseDateFolder;
-		// 	Config.Json.SplitDaily = Config.Output.SplitDaily;
-		// 	Config.Json.RootDirectory ??= Path.Combine(Config.Output.RootDirectory!, "json");
-		// }
+		
 
 		var fileProvider = FileLogProvider.Instance;
 
@@ -65,7 +61,7 @@ public class LogManager {
 		};
 		var info = LogFormatter.BuildCallerData(caller);
 		
-		foreach (var provider in _providers)
+		foreach (var provider in _providers)	
 			provider.Log(level, message, ex, info);
 	}
 

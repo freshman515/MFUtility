@@ -15,7 +15,10 @@ public class FileBuilder {
         _root.Config.Output.UseDateFolder = enabled;
         return this;
     }
-
+    public FileBuilder SetPath(string path = null) {
+        _root.Config.Output.RootPath=path;
+        return this;
+    }
     public FileBuilder MaxFileSizeMB(long size) {
         _root.Config.Output.MaxFileSizeMB = size;
         return this;

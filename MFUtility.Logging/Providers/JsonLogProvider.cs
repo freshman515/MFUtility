@@ -90,6 +90,7 @@ public class JsonLogProvider : ILogProvider {
 			File.Move(file, newName);
 		}
 	}
+	
 
 
 	// ================================

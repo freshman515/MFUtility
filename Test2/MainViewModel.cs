@@ -27,25 +27,36 @@ public partial class MainViewModel : ObservableObject {
 		Bus.Subscribe<string>("hello2", s => ToastService.ShowError(s, 2, NotifycationPosition.BottomCenter));
 		Bus.Subscribe("hello", () => { });
 		Bus.SubscribeEvent<ValueChange>(a => a.ToString()
-		                                      .Dump());
+			                                .Dump());
 		Bus.Scope("hello")
-		   .SubscribeEvent<ValueChange>(a => ToastService.Show(a.value.ToString()));
+			.SubscribeEvent<ValueChange>(a => ToastService.Show(a.value.ToString()));
 
 		Task.Run(() => {
 			Users.Add(new User("ha"));
 		});
+		
 		LogManager.Configure()
-		          .WriteTo(c => {
-			          c.Console();
-			          c.File();
-			          c.JsonFile(j => j.UseDateFolder());
-		          })
-		          .Format(f => {
-			          f.IncludeMethodName();
-			          f.IncludeLineNumber();
-		          })
-		          .Level(LogLevel.Debug)
-		          .Apply();
+			.WriteTo(w => {
+				w.Console();
+				w.File(f => {
+					f.MaxFileSizeMB(10)
+						.Async();
+				});
+				w.JsonFile(j => j.InheritFromFile()
+					           .Indented(true)
+					           .UseJsonArrayFile()
+				           );
+			})
+			.Format(f => {
+				f.IncludeAssembly()
+					.IncludeLineNumber()
+					.IncludeMethodName()
+					.UseTimeFormat("yyyy-MM-dd HH:mm:ss")
+					.SetBrackets("(",")")
+					.ShowFieldTag(false);
+			})
+			.Level(LogLevel.Debug)
+			.Apply();
 		Load();
 
 	}
@@ -63,7 +74,7 @@ public partial class MainViewModel : ObservableObject {
 	private void Test1() {
 		Bus.Publish("hello2", "I am test2");
 		Bus.Scope("hello")
-		   .PublishEvent(new ValueChange(12.34));
+			.PublishEvent(new ValueChange(12.34));
 	}
 }
 
