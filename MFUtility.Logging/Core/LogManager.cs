@@ -10,30 +10,20 @@ namespace MFUtility.Logging;
 public class LogManager {
 	private static readonly List<ILogProvider> _providers = new();
 	private static bool _initialized = false;
-	public static LogConfiguration Config { get; } = new();
+	internal static LogConfiguration Config { get; } = new();
 	public static LogBuilder Configure() {
 		return new LogBuilder();
 	}
 	//=====================================
 	// 初始化
 	//=====================================
-	public static void Initialize(Action<LogConfiguration>? configure = null) {
+	internal static void Initialize(Action<LogConfiguration>? configure = null) {
 		if (_initialized)
 			return;
 		configure?.Invoke(Config);
 
-#if DEBUG
-		Config.Output.ToConsole = true;
-#endif
-
-
-
 
 		
-
-		var fileProvider = FileLogProvider.Instance;
-
-		AddProvider(fileProvider);
 
 		_initialized = true;
 	}
@@ -54,15 +44,56 @@ public class LogManager {
 		int callerLine) {
 		if (!_initialized)
 			Initialize(); // 自动加载配置 + provider
+
+		var threadId = Environment.CurrentManagedThreadId;
 		var caller = new CallerInfo {
 			File = callerFile,
 			Member = callerMember,
 			Line = callerLine
 		};
 		var info = LogFormatter.BuildCallerData(caller);
-		
-		foreach (var provider in _providers)	
+		info.ThreadId = threadId.ToString();
+		info.ThreadName = GetThreadName();
+		info.ThreadType = GetThreadType();
+		info.TaskId = GetTaskId();
+		foreach (var provider in _providers)
 			provider.Log(level, message, ex, info);
+	}
+	public static string GetTaskId() {
+		int? taskId = Task.CurrentId;
+
+		return taskId?.ToString() ?? "None";
+	}
+	public static string GetThreadType() {
+		var t = Thread.CurrentThread;
+
+		// ThreadPool 线程
+		if (t.IsThreadPoolThread)
+			return "ThreadPool";
+
+		// Worker 线程（手动 new Thread 且 Background = true）
+		if (t.IsBackground)
+			return "Worker";
+
+		// Foreground 线程（通常是程序主线程）
+		return "Foreground";
+	}
+	public static string GetThreadName() {
+		var t = Thread.CurrentThread;
+
+		if (!string.IsNullOrEmpty(t.Name))
+			return t.Name;
+
+		// ThreadPool thread
+		if (t.IsThreadPoolThread)
+			return $"ThreadPool-{Environment.CurrentManagedThreadId}";
+
+		// Worker thread
+		if (t.IsBackground)
+			return $"Background-{Environment.CurrentManagedThreadId}";
+
+		// Default
+		return $"Thread-{Environment.CurrentManagedThreadId}";
 	}
 
 	// Convenience methods
@@ -72,6 +103,7 @@ public class LogManager {
 		[CallerFilePath] string? file = null,
 		[CallerMemberName] string? member = null,
 		[CallerLineNumber] int line = 0) {
+
 		Log(LogLevel.Info, msg, ex, file, member, line);
 	}
 

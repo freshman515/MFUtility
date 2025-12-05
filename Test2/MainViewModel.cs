@@ -8,14 +8,14 @@ using MFUtility.Logging.Enums;
 using MFUtility.Notifications.Enums;
 using MFUtility.Notifications.Services;
 using MFUtility.WPF.Bases;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using LogLevel = MFUtility.Logging.Enums.LogLevel;
 
 namespace Test2;
 
 public class User {
-	public User(string name) {
-		Name = name;
-	}
+	public User(string name) { Name = name; }
 	public string Name { get; set; }
 }
 
@@ -34,29 +34,8 @@ public partial class MainViewModel : ObservableObject {
 		Task.Run(() => {
 			Users.Add(new User("ha"));
 		});
-		
-		LogManager.Configure()
-			.WriteTo(w => {
-				w.Console();
-				w.File(f => {
-					f.MaxFileSizeMB(10)
-						.Async();
-				});
-				w.JsonFile(j => j.InheritFromFile()
-					           .Indented(true)
-					           .UseJsonArrayFile()
-				           );
-			})
-			.Format(f => {
-				f.IncludeAssembly()
-					.IncludeLineNumber()
-					.IncludeMethodName()
-					.UseTimeFormat("yyyy-MM-dd HH:mm:ss")
-					.SetBrackets("(",")")
-					.ShowFieldTag(false);
-			})
-			.Level(LogLevel.Debug)
-			.Apply();
+
+
 		Load();
 
 	}
@@ -66,7 +45,6 @@ public partial class MainViewModel : ObservableObject {
 			new User("Jack"),
 			new User("Alice")
 		});
-		LogManager.Info("Test");
 	}
 	[ObservableProperty] private bool color = true;
 
@@ -75,6 +53,9 @@ public partial class MainViewModel : ObservableObject {
 		Bus.Publish("hello2", "I am test2");
 		Bus.Scope("hello")
 			.PublishEvent(new ValueChange(12.34));
+
+		LogManager.Info("Test2");
+		LogManager.Info("Test3");
 	}
 }
 

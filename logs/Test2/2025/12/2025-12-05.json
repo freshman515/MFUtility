@@ -1,0 +1,82 @@
+[
+    {
+      "timestamp": "2025-12-05 14:48:36",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "57",
+      "message": "Test2"
+    },
+    {
+      "timestamp": "2025-12-05 14:48:36",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "58",
+      "message": "Test3"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:07",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "57",
+      "message": "Test2"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:07",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "58",
+      "message": "Test3"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:30",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "57",
+      "message": "Test2"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:30",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "58",
+      "message": "Test3"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:32",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "57",
+      "message": "Test2"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:32",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "58",
+      "message": "Test3"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:33",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "57",
+      "message": "Test2"
+    },
+    {
+      "timestamp": "2025-12-05 14:49:33",
+      "level": "Info",
+      "assembly": "Test2",
+      "className": "MainViewModel",
+      "line": "58",
+      "message": "Test3"
+    }
+]

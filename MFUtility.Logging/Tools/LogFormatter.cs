@@ -52,7 +52,22 @@ public static class LogFormatter {
 					if (LogManager.Config.Format.IncludeMethodName)
 						parts.Add(FormatField("Method", info.MethodName, tag, brackets));
 					break;
-
+				case LogField.ThreadId:
+					if (LogManager.Config.Format.IncludeThreadId)
+						parts.Add(FormatField("ThreadId", info.ThreadId, tag, brackets));
+					break;
+				case LogField.ThreadType:
+					if (LogManager.Config.Format.IncludeThreadType)
+							parts.Add(FormatField("ThreadType", info.ThreadType, tag, brackets));
+					break;
+				case LogField.ThreadName:
+					if (LogManager.Config.Format.IncludeThreadName)
+							parts.Add(FormatField("ThreadName", info.ThreadName, tag, brackets));
+					break;
+				case LogField.TaskId:
+					if (LogManager.Config.Format.IncludeTaskId)
+						parts.Add(FormatField("TaskId", info.TaskId, tag, brackets));
+					break;
 				case LogField.Message:
 					if (LogManager.Config.Format.MessageUseBrackets)
 						parts.Add(FormatField("Message", message, false, true));
@@ -118,7 +133,6 @@ public static class LogFormatter {
 					if (fmt.IncludeAssembly)
 						obj["assembly"] = info.AssemblyName;
 					break;
-
 				case LogField.ClassName:
 					if (fmt.IncludeClassName)
 						obj["className"] = info.ClassName;
@@ -130,10 +144,24 @@ public static class LogFormatter {
 					break;
 				case LogField.MethodName:
 					if (fmt.IncludeMethodName)
-						obj["Method"] = info.MethodName;
+						obj["method"] = info.MethodName;
 					break;
-
-
+				case LogField.ThreadId:
+					if (fmt.IncludeThreadId)
+						obj["threadId"] = info.ThreadId;
+					break;
+				case LogField.ThreadType:
+					if (fmt.IncludeThreadType)
+						obj["threadType"] = info.ThreadType;
+					break;
+				case LogField.ThreadName:
+					if (fmt.IncludeThreadName)
+						obj["threadName"] = info.ThreadName;
+					break;
+				case LogField.TaskId:
+					if (fmt.IncludeTaskId)
+					obj["taskId"] = info.TaskId;
+					break;
 				case LogField.Message:
 					obj["message"] = message;
 					break;

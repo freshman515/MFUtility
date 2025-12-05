@@ -42,7 +42,7 @@ public class LogBuilder {
 	}
 	public void Apply() {
 		LogManager.Initialize(cfg => {
-			cfg.Output = _config.Output;
+			cfg.File = _config.File;
 			cfg.Format = _config.Format;
 			cfg.Level = _config.Level;
 			cfg.Json = _config.Json;

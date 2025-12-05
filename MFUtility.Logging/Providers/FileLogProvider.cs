@@ -32,21 +32,36 @@ public class FileLogProvider : ILogProvider {
 	}
 
 	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
-		// 1. 日志级别过滤
+		var opt = LogManager.Config.File;
+
 		if (level < LogManager.Config.Level.Minimum)
 			return;
 
-		// 2. 构建目录和文件
-		string directory = BuildDirectory();
-		Directory.CreateDirectory(directory);
-
-		string file = BuildLogFile(directory);
-
-		// 3. 格式化文本
 		string text = LogFormatter.Format(level, message, ex, info);
 
-		// 4. 写文件：同步/异步二选一
-		if (LogManager.Config.Output.Async) {
+		// --- AppBase ---
+		if (opt.EnableAppBasePath) {
+			string dir = BuildDirectory(FileTargetType.AppBase, opt);
+			string file = BuildLogFile(dir, opt);
+			WriteText(opt, file, text);
+		}
+
+		// --- SolutionRoot ---
+		if (opt.EnableSolutionPath) {
+			string dir = BuildDirectory(FileTargetType.Solution, opt);
+			string file = BuildLogFile(dir, opt);
+			WriteText(opt, file, text);
+		}
+
+		// --- Absolute ---
+		if (opt.EnableAbsolutePath) {
+			string dir = BuildDirectory(FileTargetType.Absolute, opt);
+			string file = BuildLogFile(dir, opt);
+			WriteText(opt, file, text);
+		}
+	}
+	private void WriteText(FileLoggingOptions opt, string file, string text) {
+		if (opt.Async) {
 			EnsureAsyncWorker();
 			_asyncChannel.Writer.TryWrite(new LogItem(file, text));
 		} else {
@@ -77,35 +92,67 @@ public class FileLogProvider : ILogProvider {
 
 	// ================== 路径 & 文件 ==================
 
-	private string BuildDirectory() {
-		if (string.IsNullOrWhiteSpace(LogManager.Config.Output.RootPath)) {
-			_rootDirectory = Path.Combine(_rootDirectory, "logs");
-		} else {
-			_rootDirectory = LogManager.Config.Output.RootPath;
+	private string BuildDirectory(FileTargetType type, FileLoggingOptions opt) {
+		string root;
+
+		switch (type) {
+			case FileTargetType.AppBase:
+				root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+				                    opt.AppBasePath ?? "logs");
+				break;
+
+			case FileTargetType.Solution:
+				var sln = GetSolutionRoot();
+				root = Path.Combine(sln, opt.SolutionSubFolder ?? "logs");
+				break;
+
+			case FileTargetType.Absolute:
+				if (string.IsNullOrWhiteSpace(opt.AbsolutePath))
+					throw new InvalidOperationException("AbsolutePath is required.");
+				root = opt.AbsolutePath!;
+				break;
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(type));
 		}
 
-		if (!LogManager.Config.Output.UseDateFolder)
-			return _rootDirectory;
-		
-		return Path.Combine(
-			_rootDirectory,
-			DateTime.Now.Year.ToString(),
-			DateTime.Now.Month.ToString("00")
-		);
+		// AppName
+		if (opt.UseAppFolder)
+			root = Path.Combine(root, GetAppName());
+
+		// Date
+		if (opt.UseDateFolder)
+			root = Path.Combine(root, DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("00"));
+
+		Directory.CreateDirectory(root);
+		return root;
 	}
+	private static string GetSolutionRoot() {
+		var dir = AppDomain.CurrentDomain.BaseDirectory;
 
-	private string BuildLogFile(string directory) {
-		if (LogManager.Config.Output.SplitDaily) {
-			// logs/2025-12-03.log
-			return Path.Combine(directory, $"{DateTime.Now:yyyy-MM-dd}.log");
-		} else {
-			// logs/log.log（不按天切文件）
-			return Path.Combine(directory, "log.log");
+		while (dir != null) {
+			if (Directory.GetFiles(dir, "*.sln").Any())
+				return dir;
+
+			dir = Directory.GetParent(dir)?.FullName;
 		}
+
+		return AppDomain.CurrentDomain.BaseDirectory;
+	}
+	public static string GetAppName() {
+		return AppDomain.CurrentDomain.FriendlyName
+			.Replace(".exe", "")
+			.Replace(".dll", "");
+	}
+	private string BuildLogFile(string dir, FileLoggingOptions opt) {
+		if (opt.SplitDaily)
+			return Path.Combine(dir, $"{DateTime.Now:yyyy-MM-dd}.log");
+
+		return Path.Combine(dir, "log.log");
 	}
 
 	private void CheckFileSize(string file) {
-		long limit = LogManager.Config.Output.MaxFileSizeMB;
+		long limit = LogManager.Config.File.MaxFileSizeMB;
 
 		if (limit <= 0) return;
 

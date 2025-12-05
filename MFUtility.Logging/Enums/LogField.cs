@@ -6,6 +6,10 @@ public enum LogField {
 	Assembly,
 	ClassName,
 	MethodName,
+	ThreadId,
+	ThreadType,
+	ThreadName,
+	TaskId,
 	LineNumber,
 	Message // 新增
 }

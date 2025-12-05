@@ -15,64 +15,115 @@ public class JsonLogProvider : ILogProvider {
 	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
 		if (level < LogManager.Config.Level.Minimum)
 			return;
-		var dir = BuildDirectory();
-		Directory.CreateDirectory(dir);
-		var path = BuildLogFile(dir);
 
 		var cfg = LogManager.Config.Json;
 
+		// ---------- 保留你原来的 JSON 生成逻辑 ----------
 		var settings = new JsonSerializerSettings {
 			NullValueHandling = cfg.IgnoreNullValues ? NullValueHandling.Ignore : NullValueHandling.Include
 		};
-		var log = LogFormatter.BuildJsonObject(level, message, ex, info);
+
+		var logObj = LogFormatter.BuildJsonObject(level, message, ex, info);
 
 		string json = JsonConvert.SerializeObject(
-			log,
+			logObj,
 			cfg.Indented ? Formatting.Indented : Formatting.None,
 			settings
 		);
 
+		// =============== 多目标输出（你要的部分） ===============
+
+		if (cfg.EnableAppBasePath) {
+			var dir = BuildDirectory(FileTargetType.AppBase, cfg);
+			var file = BuildLogFile(dir, cfg);
+			WriteJson(file, json, cfg);
+		}
+
+		if (cfg.EnableSolutionPath) {
+			var dir = BuildDirectory(FileTargetType.Solution, cfg);
+			var file = BuildLogFile(dir, cfg);
+			WriteJson(file, json, cfg);
+		}
+
+		if (cfg.EnableAbsolutePath) {
+			var dir = BuildDirectory(FileTargetType.Absolute, cfg);
+			var file = BuildLogFile(dir, cfg);
+			WriteJson(file, json, cfg);
+		}
+	}
+	private void WriteJson(string file, string json, JsonLoggingOptions cfg) {
 		lock (_lock) {
-			CheckFileSize(path);
+			CheckFileSize(file);
 
 			if (!cfg.UseJsonArray) {
-				// jsonl 模式
-				File.AppendAllText(path, json + Environment.NewLine);
+				File.AppendAllText(file, json + Environment.NewLine);
 				return;
 			}
 
-			WriteAsJsonArray(path, json);
+			WriteAsJsonArray(file, json);
 		}
 	}
 
 
-	// ================================
-	// 目录与文件构建（仿 FileLogProvider）
-	// ================================
-	private string BuildDirectory() {
-		if (string.IsNullOrWhiteSpace(LogManager.Config.Json.RootPath)) {
-			_rootDirectory = Path.Combine(_rootDirectory, "logs");
-		} else {
-			_rootDirectory = LogManager.Config.Json.RootPath;
-		}
-		if (!LogManager.Config.Json.UseDateFolder)
-			return _rootDirectory;
+	private string BuildDirectory(FileTargetType type, JsonLoggingOptions opt) {
+		string root;
 
-		return Path.Combine(
-			_rootDirectory,
-			DateTime.Now.Year.ToString(),
-			DateTime.Now.Month.ToString("00")
-		);
+		switch (type) {
+			case FileTargetType.AppBase:
+				root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+				                    opt.AppBasePath ?? "logs");
+				break;
+
+			case FileTargetType.Solution:
+				var sln = GetSolutionRoot();
+				root = Path.Combine(sln, opt.SolutionSubFolder ?? "logs");
+				break;
+
+			case FileTargetType.Absolute:
+				if (string.IsNullOrWhiteSpace(opt.AbsolutePath))
+					throw new InvalidOperationException("AbsolutePath is required.");
+				root = opt.AbsolutePath!;
+				break;
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(type));
+		}
+
+		// AppName
+		if (opt.UseAppFolder)
+			root = Path.Combine(root, GetAppName());
+
+		// Date
+		if (opt.UseDateFolder)
+			root = Path.Combine(root, DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString("00"));
+
+		Directory.CreateDirectory(root);
+		return root;
+	}
+	private static string GetSolutionRoot() {
+		var dir = AppDomain.CurrentDomain.BaseDirectory;
+
+		while (dir != null) {
+			if (Directory.GetFiles(dir, "*.sln").Any())
+				return dir;
+
+			dir = Directory.GetParent(dir)?.FullName;
+		}
+
+		return AppDomain.CurrentDomain.BaseDirectory;
+	}
+	public static string GetAppName() {
+		return AppDomain.CurrentDomain.FriendlyName
+			.Replace(".exe", "")
+			.Replace(".dll", "");
 	}
 
-	private string BuildLogFile(string directory) {
-		var cfg = LogManager.Config.Json;
-		string extension = cfg.UseJsonArray ? ".json" : ".jsonl";
+	private string BuildLogFile(string directory, JsonLoggingOptions cfg) {
+		string ext = cfg.UseJsonArray ? ".json" : ".jsonl";
 
-		// 文件名：按天 or 单一文件
 		string fileName = cfg.SplitDaily
-			? $"{DateTime.Now:yyyy-MM-dd}{extension}"
-			: $"log{extension}";
+			? $"{DateTime.Now:yyyy-MM-dd}{ext}"
+			: $"log{ext}";
 
 		return Path.Combine(directory, fileName);
 	}
@@ -90,7 +141,7 @@ public class JsonLogProvider : ILogProvider {
 			File.Move(file, newName);
 		}
 	}
-	
+
 
 
 	// ================================
@@ -102,7 +153,7 @@ public class JsonLogProvider : ILogProvider {
 
 		if (!File.Exists(file)) {
 			File.WriteAllText(file,
-				$@"[
+			                  $@"[
 {indentedJson}
 ]");
 			return;
@@ -117,13 +168,13 @@ public class JsonLogProvider : ILogProvider {
 				before += ",";
 
 			File.WriteAllText(file,
-				$@"{before}
+			                  $@"{before}
 {indentedJson}
 ]");
 		} else {
 			// 修复坏文件
 			File.WriteAllText(file,
-				$@"[
+			                  $@"[
 {indentedJson}
 ]");
 		}

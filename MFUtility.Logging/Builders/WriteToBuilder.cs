@@ -11,11 +11,8 @@ public class WriteToBuilder {
 	}
 
 	public WriteToBuilder Console(bool color = false) {
-		_root.Config.Output.ToConsole = true;
-		_root.Config.Output.ConsoleColor = color;
-
+		_root.Config.File.ConsoleColor = color;
 		_root.AddProvider(new ConsoleLogProvider());
-
 		return this;
 	}
 

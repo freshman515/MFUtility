@@ -9,9 +9,7 @@
         mc:Ignorable="d"
         xmlns:cv="https://schemas.mfutility.converters.dev/wpf"
         Title="MainWindow" Height="450" Width="800">
-    <Window.DataContext>
-        <local:MainViewModel />
-    </Window.DataContext>
+  
     <mf:Grid Columns="* *" ColumnSpacing="10">
         <mf:StackPanel MarginTop="10">
             <Button Background="{Binding Color,Converter={x:Static cv:BoolToBrushConverter.Instance},ConverterParameter='#ff0000,#00ff00'}"
