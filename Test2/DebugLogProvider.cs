@@ -7,8 +7,10 @@ namespace Test2;
 
 public class DebugLogProvider : ILogProvider {
 
-	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
+
+	public void Log(LogLevel level, string message, Exception? ex, LogInfo info) {
 		string text = LogFormatter.Format(level, message, ex, info);
-		System.Diagnostics.Debug.Write(text);
+		string json = LogFormatter.FormatJson(level, message, ex, info, true);
+		GlobalParameters.Instance.Logs.Add(text);
 	}
 }

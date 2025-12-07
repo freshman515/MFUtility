@@ -31,7 +31,7 @@ public class FileLogProvider : ILogProvider {
 		public string Text { get; }
 	}
 
-	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
+	public void Log(LogLevel level, string message, Exception? ex, LogInfo info) {
 		var opt = LogManager.Config.File;
 
 		if (level < LogManager.Config.Level.Minimum)

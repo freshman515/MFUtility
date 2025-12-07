@@ -15,9 +15,10 @@ internal abstract class CommonPublisher {
 			// ============================
 			var projects = new Dictionary<int, string> {
 				{ 1, @"D:\pragma\Utilities\XMFUtility\MFUtility\MFUtility.csproj" },
-				{ 2, @"D:\pragma\Utilities\XMFUtility\MFUtility.Core\MFUtility.Core.csproj" },
+				{ 2, @"D:\pragma\Utilities\XMFUtility\MFUtility.Common\MFUtility.Common.csproj" },
 				{ 3, @"D:\pragma\Utilities\XMFUtility\MFUtility.WPF\MFUtility.WPF.csproj" },
-				{ 4, @"D:\pragma\Utilities\XMFUtility\MFUtility.Logging\MFUtility.Logging.csproj" }
+				{ 4, @"D:\pragma\Utilities\XMFUtility\MFUtility.Logging\MFUtility.Logging.csproj" },
+				{ 5, @"D:\pragma\Utilities\XMFUtility\MFUtility.EventBus\MFUtility.EventBus.csproj" }
 			};
 
 			// ============================
@@ -71,7 +72,7 @@ internal abstract class CommonPublisher {
 			Console.WriteLine($"✅ 打包成功: {nupkgFile}");
 
 			RunCommand("dotnet",
-				$"nuget push \"{nupkgFile}\" --source \"{source}\" --api-key {apiKey} --skip-duplicate");
+			           $"nuget push \"{nupkgFile}\" --source \"{source}\" --api-key {apiKey} --skip-duplicate");
 
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.WriteLine("🎉 发布成功！");

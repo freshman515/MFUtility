@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>
+            net470;
+            net471;
+            net472;
+            net48;
+            net481;
+            net8.0-windows
+        </TargetFrameworks>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\MFUtility.Ioc\MFUtility.Ioc.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    </ItemGroup>
+
+</Project>

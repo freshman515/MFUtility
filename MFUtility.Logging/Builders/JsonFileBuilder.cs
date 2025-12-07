@@ -5,6 +5,7 @@ namespace MFUtility.Logging.Builders;
 
 public class JsonFileBuilder {
 	private readonly LogBuilder _root;
+	
 
 	public JsonFileBuilder(LogBuilder root) {
 		_root = root;
@@ -43,6 +44,7 @@ public class JsonFileBuilder {
 		_root.Config.Json.AppBasePath = _root.Config.File.AppBasePath;
 		_root.Config.Json.SolutionSubFolder = _root.Config.File.SolutionSubFolder;
 		_root.Config.Json.AbsolutePath = _root.Config.File.AbsolutePath;
+		_root.Config.Json.EnabelExceptionInfo = _root.Config.File.EnabelExceptionInfo;
 		
 		_root.Config.Json.UseAppFolder = _root.Config.File.UseAppFolder;
 		_root.Config.Json.UseDateFolder = _root.Config.File.UseDateFolder;
@@ -53,6 +55,10 @@ public class JsonFileBuilder {
 		_root.Config.Json.AppBasePath = folder;
 		return this;
 	}
+	  public JsonFileBuilder EnableException(bool enabled = true) {
+	    _root.Config.Json.EnabelExceptionInfo = enabled;
+	    return this;
+    }
 
 	public JsonFileBuilder UseSolutionPath(string folder = "logs") {
 		_root.Config.Json.EnableSolutionPath = true;

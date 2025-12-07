@@ -9,19 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-      <PackageReference Include="Dst.Common.WpfTools" Version="1.1.187" />
-      <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="Assets\Svgs\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\MFUtility.Core\MFUtility.Core.csproj" />
-      <ProjectReference Include="..\MFUtility.Logging\MFUtility.Logging.csproj" />
-      <ProjectReference Include="..\MFUtility.WPF\MFUtility.WPF.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -29,6 +17,19 @@
       <Content Include="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="MainView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MFUtility.Mvvm.Wpf.Toolkit\MFUtility.Mvvm.Wpf.Toolkit.csproj" />
+      <ProjectReference Include="..\MFUtility.WPF\MFUtility.WPF.csproj" />
     </ItemGroup>
 
 </Project>

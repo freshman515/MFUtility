@@ -9,7 +9,7 @@ public class Program {
 			Console.WriteLine("🚀 NuGet 自动发布工具");
 
 			string projectPath = GetArgValue(args, "-p")
-			                     ?? @"D:\pragma\Utilities\XMFUtility\MFUtility.Core\MFUtility.Core.csproj";
+			                     ?? @"D:\pragma\Utilities\XMFUtility\MFUtility.Common\MFUtility.Common.csproj";
 
 			if (!File.Exists(projectPath))
 				throw new FileNotFoundException($"未找到项目文件: {projectPath}");

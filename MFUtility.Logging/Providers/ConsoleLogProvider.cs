@@ -6,7 +6,7 @@ using MFUtility.Logging.Tools;
 namespace MFUtility.Logging.Providers;
 
 public class ConsoleLogProvider : ILogProvider {
-	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
+	public void Log(LogLevel level, string message, Exception? ex, LogInfo info) {
 		string text = LogFormatter.Format(level, message, ex, info);
 
 		Console.Write(text);

@@ -12,7 +12,7 @@ public class JsonLogProvider : ILogProvider {
 	private readonly object _lock = new();
 
 
-	public void Log(LogLevel level, string message, Exception? ex, CallerData info) {
+	public void Log(LogLevel level, string message, Exception? ex, LogInfo info) {
 		if (level < LogManager.Config.Level.Minimum)
 			return;
 

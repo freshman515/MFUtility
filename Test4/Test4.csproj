@@ -13,7 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MFUtility.Ioc\MFUtility.Ioc.csproj" />
       <ProjectReference Include="..\MFUtility.Logging\MFUtility.Logging.csproj" />
+      <ProjectReference Include="..\MFUtility.Mvvm.Wpf.Toolkit\MFUtility.Mvvm.Wpf.Toolkit.csproj" />
     </ItemGroup>
 
 </Project>

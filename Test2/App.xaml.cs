@@ -1,11 +1,9 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
-using MFUtility.Logging;
-using MFUtility.Logging.Enums;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using System.Windows;
+using MFUtility.Ioc.Core;
+using MFUtility.Ioc.Enums;
+using MFUtility.Mvvm.Wpf.Extensions;
+using Test2.ViewModels;
+using Test2.Views;
 
 namespace Test2;
 
@@ -13,56 +11,24 @@ namespace Test2;
 /// Interaction logic for App.xaml
 /// </summary>
 public partial class App : Application {
-	public static IHost? AppHost;
-	public App() {
-		AppHost = Host.CreateDefaultBuilder()
-			.ConfigureServices((context, services) => {
-				services.AddSingleton<MainWindow>();
-				services.AddSingleton<MainViewModel>();
-
-			})
-			.Build();
-	}
+	public static Container Container { get; set; }
 	protected override async void OnStartup(StartupEventArgs e) {
-		await AppHost!.StartAsync();
-		LogManager.Configure()
-			.WriteTo(w => {
-				w.Console();
-				w.File(f => {
-					f.MaxFileSizeMB(10)
-						.UseAppFolder()
-						.UseSolutionPath()
-						.UseBasePath()
-						.Async()
-						.UseDateFolder();
-				});
-				w.JsonFile(j => j.InheritFromFile()
-					           .Indented(true)
-					           .UseJsonArrayFile()
-				);
-			})
-			.Format(f => {
-				f.Include(i => {
-					i.ClassName()
-						.Assembly()
-						.LineNumber();
-				});
-				f.Style(s => {
-					s.TimeFormat("yyyy-MM-dd HH:mm:ss")
-						.UseFieldTag(false);
-				});
-				f.OrderDefault();
-			})
-			.Level(LogLevel.Debug)
-			.Apply();
-		var main = AppHost.Services.GetRequiredService<MainWindow>();
-		main.DataContext = AppHost.Services.GetRequiredService<MainViewModel>();
+		var container = new Container();
+		Container = container;
+		container.AddSingleton(new Config { Name = "Hello" });
+		container.AutoRegister(
+			assembly: typeof(MainViewModel).Assembly,
+			filter: t => t.Name.EndsWith("ViewModel")
+			, Lifetime.Singleton);
+		container.AutoRegister(
+			assembly: typeof(MainViewModel).Assembly,
+			filter: t => t.Name.EndsWith("Service") || t.Name.EndsWith("Repository"),
+			Lifetime.Singleton, registerInterfaces: true);
+		
+		var main = container.ResolveView<MainView>();
 		main.Show();
 	}
 
 	protected override async void OnExit(ExitEventArgs e) {
-		await AppHost!.StopAsync();
-		AppHost.Dispose();
-		base.OnExit(e);
 	}
 }

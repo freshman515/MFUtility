@@ -2,9 +2,9 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace MFUtility.WPF.Bases
-{
-    public class BindableCollection<T> : ObservableCollection<T>
+namespace MFUtility.WPF.Bases;
+
+  public class BindableCollection<T> : ObservableCollection<T>
     {
         private readonly SynchronizationContext? _sync;
 
@@ -190,4 +190,3 @@ namespace MFUtility.WPF.Bases
 
         #endregion
     }
-}

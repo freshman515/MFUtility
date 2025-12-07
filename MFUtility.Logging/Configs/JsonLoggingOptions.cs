@@ -25,4 +25,6 @@ public class JsonLoggingOptions {
     // --- 目标路径3: 绝对路径 ---
     public bool EnableAbsolutePath { get; set; } = false;
     public string? AbsolutePath { get; set; }
+    public bool EnabelExceptionInfo { get; set; } = true;
+    
 }

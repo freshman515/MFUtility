@@ -1,0 +1,19 @@
+<Window x:Class="Test5Framework.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Test5Framework"
+        mc:Ignorable="d"
+        xmlns:mf="https://schemas.mfutility.dev/wpf"
+        xmlns:managers="clr-namespace:MFUtility.Mvvm.Wpf.Managers;assembly=MFUtility.Mvvm.Wpf.Core"
+        Title="MainWindow" Height="350" Width="525">
+    <mf:Grid>
+        <StackPanel>
+            <Button Content="Home" Command="{Binding  NavigateHomeCommand}" />
+            <Button Content="Settings" Command="{Binding NavigateSettingsCommand}" />
+
+        </StackPanel>
+        <ContentControl managers:RegionManager.RegionName="Main" />
+    </mf:Grid>
+</Window>

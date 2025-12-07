@@ -1,22 +1,24 @@
-﻿using MFUtility.Logging.Configs;
+﻿using System.Text;
+using MFUtility.Logging.Configs;
 using MFUtility.Logging.Enums;
 using MFUtility.Logging.Providers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace MFUtility.Logging.Tools;
 
 public static class LogFormatter {
-	public static CallerData BuildCallerData(CallerInfo caller) {
+	public static LogInfo BuildCallerData(CallerInfo caller) {
 		var (assembly, className) = GetCallerType(caller);
 
-		return new CallerData {
+		return new LogInfo {
 			AssemblyName = assembly,
 			ClassName = className,
 			LineNumber = caller.Line.ToString(),
 			MethodName = caller.Member ?? "Unknown"
 		};
 	}
-	public static string Format(LogLevel level, string message, Exception? ex, CallerData info) {
+	public static string Format(LogLevel level, string message, Exception? ex, LogInfo info) {
 		string ts = DateTime.Now.ToString(LogManager.Config.Format.TimeFormat);
 
 		bool tag = LogManager.Config.Format.ShowFieldTag;
@@ -58,11 +60,11 @@ public static class LogFormatter {
 					break;
 				case LogField.ThreadType:
 					if (LogManager.Config.Format.IncludeThreadType)
-							parts.Add(FormatField("ThreadType", info.ThreadType, tag, brackets));
+						parts.Add(FormatField("ThreadType", info.ThreadType, tag, brackets));
 					break;
 				case LogField.ThreadName:
 					if (LogManager.Config.Format.IncludeThreadName)
-							parts.Add(FormatField("ThreadName", info.ThreadName, tag, brackets));
+						parts.Add(FormatField("ThreadName", info.ThreadName, tag, brackets));
 					break;
 				case LogField.TaskId:
 					if (LogManager.Config.Format.IncludeTaskId)
@@ -80,15 +82,15 @@ public static class LogFormatter {
 		// 拼装
 		string line = string.Join(" ", parts) + Environment.NewLine;
 
-		if (ex != null) {
+		if (ex != null && LogManager.Config.File.EnabelExceptionInfo) {
 			if (LogManager.Config.Format.ExceptionNewLine) {
-				// 默认：异常换行
-				line += ex + Environment.NewLine;
+				// 专业格式化异常输出
+				line += FormatException(ex);
 			} else {
-				// 不换行模式：压缩异常为一行
-				string exOneLine = ex.ToString()
-					.Replace("\r", " ")
-					.Replace("\n", " ");
+				// 单行压缩模式
+				string exOneLine =
+					$"Exception Type={ex.GetType().FullName}, Message={ex.Message}"
+					+ (ex.StackTrace != null ? $", Stack={ex.StackTrace.Replace("\r", " ").Replace("\n", " ")}" : "");
 
 				line = line.TrimEnd('\n', '\r');
 				line += " " + exOneLine + Environment.NewLine;
@@ -96,6 +98,19 @@ public static class LogFormatter {
 		}
 
 		return line;
+	}
+	private static string FormatException(Exception ex) {
+		var sb = new StringBuilder();
+
+		sb.AppendLine("Exception:");
+		sb.AppendLine($"  Type    : {ex.GetType().FullName}");
+		sb.AppendLine($"  Message : {ex.Message}");
+		sb.AppendLine("  Stack   :");
+		if (!string.IsNullOrWhiteSpace(ex.StackTrace)) {
+			foreach (var line in ex.StackTrace.Split('\n'))
+				sb.AppendLine($"    {line.Trim()}");
+		}
+		return sb.ToString();
 	}
 	private static string FormatField(string tagName, string value, bool tag, bool brackets) {
 		string content = tag ? $"{tagName}:{value}" : value;
@@ -114,7 +129,7 @@ public static class LogFormatter {
 		return $"{left}{content}{right}";
 	}
 
-	public static JObject BuildJsonObject(LogLevel level, string message, Exception? ex, CallerData info) {
+	public static JObject BuildJsonObject(LogLevel level, string message, Exception? ex, LogInfo info) {
 
 		JObject obj = new JObject();
 		var fmt = LogManager.Config.Format;
@@ -160,16 +175,40 @@ public static class LogFormatter {
 					break;
 				case LogField.TaskId:
 					if (fmt.IncludeTaskId)
-					obj["taskId"] = info.TaskId;
+						obj["taskId"] = info.TaskId;
 					break;
 				case LogField.Message:
 					obj["message"] = message;
 					break;
 			}
 		}
-
 		if (ex != null)
-			obj["exception"] = ex.ToString();
+			obj["exception"] = BuildJsonException(ex);
+
+		return obj;
+	}
+	public static string FormatJson(LogLevel level, string message, Exception? ex, LogInfo info, bool indented=true) {
+		JObject obj = BuildJsonObject(level, message, ex, info);
+		return indented ? obj.ToString(Formatting.Indented) : obj.ToString();
+	}
+	private static JObject BuildJsonException(Exception ex) {
+		JObject obj = new JObject {
+			["type"] = ex.GetType().FullName,
+			["message"] = ex.Message
+		};
+
+		if (!string.IsNullOrWhiteSpace(ex.StackTrace)) {
+			JArray stackLines = new JArray();
+
+			foreach (var line in ex.StackTrace.Split('\n'))
+				stackLines.Add(line.Trim());
+
+			obj["stack"] = stackLines;
+		}
+
+		// InnerException（可递归）
+		if (ex.InnerException != null)
+			obj["innerException"] = BuildJsonException(ex.InnerException);
 
 		return obj;
 	}

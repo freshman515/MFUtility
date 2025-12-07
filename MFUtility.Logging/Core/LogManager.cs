@@ -11,9 +11,7 @@ public class LogManager {
 	private static readonly List<ILogProvider> _providers = new();
 	private static bool _initialized = false;
 	internal static LogConfiguration Config { get; } = new();
-	public static LogBuilder Configure() {
-		return new LogBuilder();
-	}
+	public static LogBuilder Configure() { return new LogBuilder(); }
 	//=====================================
 	// 初始化
 	//=====================================
@@ -22,8 +20,6 @@ public class LogManager {
 			return;
 		configure?.Invoke(Config);
 
-
-		
 
 		_initialized = true;
 	}
@@ -56,8 +52,20 @@ public class LogManager {
 		info.ThreadName = GetThreadName();
 		info.ThreadType = GetThreadType();
 		info.TaskId = GetTaskId();
+		info.Exception = BuildExceptionInfo(ex);
+		info.Message = message;
 		foreach (var provider in _providers)
 			provider.Log(level, message, ex, info);
+	}
+	private static ExceptionInfo? BuildExceptionInfo(Exception? ex) {
+		if (ex == null)
+			return null;
+
+		return new ExceptionInfo {
+			ExceptionType = ex.GetType().FullName,
+			ExceptionMessage = ex.Message,
+			ExceptionStack = ex.StackTrace
+		};
 	}
 	public static string GetTaskId() {
 		int? taskId = Task.CurrentId;
@@ -103,7 +111,6 @@ public class LogManager {
 		[CallerFilePath] string? file = null,
 		[CallerMemberName] string? member = null,
 		[CallerLineNumber] int line = 0) {
-
 		Log(LogLevel.Info, msg, ex, file, member, line);
 	}
 

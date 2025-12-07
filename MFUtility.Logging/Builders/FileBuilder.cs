@@ -40,6 +40,10 @@ public class FileBuilder {
         _root.Config.File.AbsolutePath = fullPath;
         return this;
     }
+    public FileBuilder EnableException(bool enabled = true) {
+	    _root.Config.File.EnabelExceptionInfo = enabled;
+	    return this;
+    }
 	public FileBuilder MaxFileSizeMB(long size) {
 		_root.Config.File.MaxFileSizeMB = size;
 		return this;
