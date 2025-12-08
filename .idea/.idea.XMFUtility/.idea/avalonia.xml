@@ -7,6 +7,7 @@
         <entry key="AvaloniaApplication1/Views/AboutView.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/Views/HomeView.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
         <entry key="AvaloniaApplication1/Views/MainView.axaml" value="AvaloniaApplication1/AvaloniaApplication1.csproj" />
+        <entry key="samples/AvaloniaApplication1/Views/HomeView.axaml" value="samples/AvaloniaApplication1/AvaloniaApplication1.csproj" />
       </map>
     </option>
   </component>
