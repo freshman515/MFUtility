@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using MFUtility.Extensions;
+using MFUtility.Common.Extensions;
 
 namespace MFUtility.WPF.UI.Helpers;
 

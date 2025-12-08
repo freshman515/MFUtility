@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Newtonsoft.Json;
 
-namespace MFUtility.EventBus;
+namespace MFUtility.Bus.Event;
 
 public static class EventBus {
 	private static readonly ConcurrentDictionary<string, EventScope> _scopes = new();

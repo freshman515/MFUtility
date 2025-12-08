@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace MFUtility.Mvvm.Wpf.Helpers;
+namespace MFUtility.Mvvm.Wpf.Framework.Helpers;
 
 public static class ViewModelLocator {
 	public static Type? FindViewModelForView(Type viewType) {

@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Test5"
         xmlns:mf="https://schemas.mfutility.dev/wpf"
-        xmlns:managers="clr-namespace:MFUtility.Mvvm.Wpf.Managers;assembly=MFUtility.Mvvm.Wpf.Framework"
         xmlns:viewModels="clr-namespace:Test5.ViewModels"
+        xmlns:managers="clr-namespace:MFUtility.Mvvm.Wpf.Framework.Managers;assembly=MFUtility.Mvvm.Wpf.Framework"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
         Title="MainWindow" Height="350" Width="525">

@@ -1,9 +1,9 @@
 ﻿#nullable enable
 
 using System.Net;
-using MFUtility.Extensions;
+using MFUtility.Common.Extensions;
 
-namespace MFUtility.Core.Helpers;
+namespace MFUtility.Common.Helpers;
 
 /// <summary>把文本转换为指定类型的数值</summary>
 public static class ConvertHelper {

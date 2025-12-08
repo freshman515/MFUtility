@@ -1,6 +1,6 @@
-﻿using MFUtility.Extensions;
+﻿using MFUtility.Common.Extensions;
 
-namespace MFUtility.Core.Base;
+namespace MFUtility.Common.Base;
 
 public static class Guards {
 	/// <summary>对象为null时抛出异常</summary>

@@ -10,20 +10,17 @@ internal abstract class CommonPublisher {
 		try {
 			Console.WriteLine("🚀 NuGet 自动发布工具");
 
-			// ============================
-			// 预设 4 个可发布项目
-			// ============================
 			var projects = new Dictionary<int, string> {
 				{ 1, @"D:\pragma\Utilities\XMFUtility\MFUtility\MFUtility.csproj" },
 				{ 2, @"D:\pragma\Utilities\XMFUtility\MFUtility.Common\MFUtility.Common.csproj" },
 				{ 3, @"D:\pragma\Utilities\XMFUtility\MFUtility.WPF\MFUtility.WPF.csproj" },
 				{ 4, @"D:\pragma\Utilities\XMFUtility\MFUtility.Logging\MFUtility.Logging.csproj" },
-				{ 5, @"D:\pragma\Utilities\XMFUtility\MFUtility.EventBus\MFUtility.EventBus.csproj" }
+				{ 5, @"D:\pragma\Utilities\XMFUtility\MFUtility.Bus\MFUtility.Bus.csproj" },
+				{ 6, @"D:\pragma\Utilities\XMFUtility\MFUtility.Ioc\MFUtility.Ioc.csproj" },
+				{ 7, @"D:\pragma\Utilities\XMFUtility\MFUtility.Mvvm.Wpf.Framework\MFUtility.Mvvm.Wpf.Framework.csproj" },
+				{ 8, @"D:\pragma\Utilities\XMFUtility\MFUtility.Mvvm.Wpf.Toolkit\MFUtility.Mvvm.Wpf.Toolkit.csproj" },
 			};
 
-			// ============================
-			// 如果命令行没有 -p，就让用户选择
-			// ============================
 			string? argProject = GetArgValue(args, "-p");
 			string projectPath;
 
@@ -44,9 +41,9 @@ internal abstract class CommonPublisher {
 			if (!File.Exists(projectPath))
 				throw new FileNotFoundException($"未找到项目文件: {projectPath}");
 
-			// ==========================================
-			// 自动递增版本号
-			// ==========================================
+			// ============================
+			// version 自动递增
+			// ============================
 			string version = GetArgValue(args, "-v");
 			if (version == null) {
 				version = AutoIncrementVersion(projectPath);
@@ -64,13 +61,33 @@ internal abstract class CommonPublisher {
 			Console.WriteLine($"🌐 源: {source}");
 
 			UpdateProjectVersion(projectPath, version);
+
+			// ============================
+			// dotnet pack
+			// ============================
 			RunCommand("dotnet", $"pack \"{projectPath}\" -c Release -o ./nupkg");
 
-			string nupkgFile = Directory.GetFiles("./nupkg", $"*.{version}.nupkg").FirstOrDefault()
-			                   ?? throw new FileNotFoundException($"未找到打包文件 (*.nupkg)");
+			// ============================
+			// 修复 nupkg 匹配错误的问题 !!!
+			// ============================
+			string packageId = GetPackageId(projectPath);
+			string nupkgPattern = $"{packageId}.{version}.nupkg";
+
+			string? nupkgFile = Directory.GetFiles("./nupkg", nupkgPattern).FirstOrDefault()
+			                    ?? throw new FileNotFoundException($"❌ 未找到对应的 NuGet 包文件: {nupkgPattern}\n请检查 ./nupkg 目录中的文件。");
+
+			if (nupkgFile == null) {
+				throw new FileNotFoundException(
+					$"❌ 未找到对应的 NuGet 包文件: {nupkgPattern}\n" +
+					$"请检查 ./nupkg 目录中的文件。"
+				);
+			}
 
 			Console.WriteLine($"✅ 打包成功: {nupkgFile}");
 
+			// ============================
+			// dotnet nuget push
+			// ============================
 			RunCommand("dotnet",
 			           $"nuget push \"{nupkgFile}\" --source \"{source}\" --api-key {apiKey} --skip-duplicate");
 
@@ -84,6 +101,23 @@ internal abstract class CommonPublisher {
 			Console.ResetColor();
 			return -1;
 		}
+	}
+
+	private static string GetPackageId(string csprojPath) {
+		var xml = XDocument.Load(csprojPath);
+
+		// 优先 PackageId
+		var pkg = xml.Descendants("PackageId").FirstOrDefault()?.Value;
+		if (!string.IsNullOrEmpty(pkg))
+			return pkg;
+
+		// 次之 AssemblyName
+		var asm = xml.Descendants("AssemblyName").FirstOrDefault()?.Value;
+		if (!string.IsNullOrEmpty(asm))
+			return asm;
+
+		// 最后使用项目名
+		return Path.GetFileNameWithoutExtension(csprojPath);
 	}
 
 	private static string? GetArgValue(string[] args, string key) {

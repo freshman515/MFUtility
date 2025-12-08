@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Core.Utilis;
+﻿namespace MFUtility.Common.Utilis;
 
 public sealed class TempDirectory : IDisposable {
 	public string Path { get; }

@@ -1,16 +1,18 @@
 ﻿using System;
 using MFUtility.Ioc.Enums;
 
-namespace MFUtility.Mvvm.Wpf.Interfaces;
+namespace MFUtility.Mvvm.Wpf.Framework.Interfaces;
 
 public interface INavigator {
 	void Navigate<TViewModel>(string region,object? parameter=null,Lifetime lifetime=Lifetime.Singleton) ;
 	void Navigate(Type viewModelType, string region, object? parameter = null, Lifetime lifetime = Lifetime.Singleton);
+	void Navigate(string viewModelTypeString, string region, object? parameter = null, Lifetime lifetime = Lifetime.Singleton);
 
     // 尝试导航
     bool TryNavigate<TViewModel>(string region, object? parameter = null);
+    bool TryNavigate(string viewModelTypeString,string region, object? parameter = null);
 
-    // BackStack 支持
+    // BackStack 支持	
     bool CanGoBack(string region);
     void GoBack(string region);
 

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="200" Width="450">
     <Window.DataContext>
-        <viewModels:MainVirtualViewModel/>
+        <viewModels:MainViewModel/>
     </Window.DataContext>
     <StackPanel>
         <Button Command="{Binding LogCommand }" Content="打log" Width="100" Height="30"/>

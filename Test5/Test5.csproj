@@ -99,9 +99,9 @@
         <Project>{a56992bb-e4b0-441d-87f9-26bee2c04ba1}</Project>
         <Name>MFUtility.Common</Name>
       </ProjectReference>
-      <ProjectReference Include="..\MFUtility.EventBus\MFUtility.EventBus.csproj">
+      <ProjectReference Include="..\MFUtility.Bus\MFUtility.Bus.csproj">
         <Project>{3c570174-bec9-4c5e-91b7-5e8a60f8b88d}</Project>
-        <Name>MFUtility.EventBus</Name>
+        <Name>MFUtility.Bus</Name>
       </ProjectReference>
       <ProjectReference Include="..\MFUtility.Ioc\MFUtility.Ioc.csproj">
         <Project>{b48bb1ca-24ec-43c9-835f-aae9996b39f3}</Project>
@@ -112,7 +112,7 @@
         <Name>MFUtility.Logging</Name>
       </ProjectReference>
       <ProjectReference Include="..\MFUtility.Mvvm.Wpf.Framework\MFUtility.Mvvm.Wpf.Framework.csproj">
-        <Project>{43ef2dff-f66c-4a2b-916d-687c2e62c444}</Project>
+        <Project>{630318f8-5501-4431-8e99-456f120bf2ae}</Project>
         <Name>MFUtility.Mvvm.Wpf.Framework</Name>
       </ProjectReference>
       <ProjectReference Include="..\MFUtility.WPF\MFUtility.WPF.csproj">

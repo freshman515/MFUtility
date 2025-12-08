@@ -2,11 +2,14 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using MFUtility.Ioc;
-using MFUtility.Mvvm.Wpf.Bases;
-using MFUtility.Mvvm.Wpf.Interfaces;
-namespace MFUtility.Mvvm.Wpf;
+using MFUtility.Mvvm.Wpf.Framework.Bases;
+using MFUtility.Mvvm.Wpf.Framework.Interfaces;
+
+namespace MFUtility.Mvvm.Wpf.Framework;
 
 public class ViewModelBase : BaseViewModel {
+	private bool _isFirstActivated = true;
+	
 	public object? NavigationParameter { get; internal set; }
 	public ViewModelBase? PreviousViewModel { get; internal set; }
 	public virtual string DisplayName {
@@ -95,4 +98,25 @@ public class ViewModelBase : BaseViewModel {
 	}
 	
 	public TViewModel GetCurrentViewModel<TViewModel>(string region) where TViewModel : class => Navigator.GetCurrent<TViewModel>(region);
+	public virtual void OnActivated() {
+		if (_isFirstActivated) {
+			_isFirstActivated = false;
+			OnFirstActivated();
+		}
+	}
+
+	public virtual void OnDeactivated() {
+	}
+	public virtual void OnFirstActivated() {
+	}
+	public static Type? ResolveViewModel(string name) {
+			if (!name.EndsWith("ViewModel"))
+				name += "ViewModel";
+
+			// 查找当前 AppDomain 所有可用类型
+			return AppDomain.CurrentDomain
+			                .GetAssemblies()
+			                .SelectMany(a => a.GetTypes())
+			                .FirstOrDefault(t => t.Name == name);
+		}
 }

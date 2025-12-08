@@ -1,8 +1,7 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using Newtonsoft.Json;
 
-namespace MFUtility.WPF.Helpers;
+namespace MFUtility.Common.Helpers;
 
 /// <summary>
 /// 🌟 高可靠 JSON 文件读写辅助类

@@ -5,7 +5,6 @@ using MFUtility.Ioc;
 using MFUtility.Ioc.Core;
 using MFUtility.Ioc.Enums;
 using MFUtility.Mvvm.Wpf.Helpers;
-using MFUtility.Mvvm.Wpf.Interfaces;
 using MFUtility.Mvvm.Wpf.Services;
 
 namespace MFUtility.Mvvm.Wpf.Extensions;

@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using Newtonsoft.Json;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 public static class ObjectExtensions {
 

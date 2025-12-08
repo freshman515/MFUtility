@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Reflection;
 
-namespace MFUtility.Extensions {
+namespace MFUtility.Common.Extensions {
 	/// <summary>
 	/// 提供对 <see cref="Enum"/> 类型的通用扩展方法。
 	/// </summary>

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 public static class BoolExtensions {
     public static string ToYesNo(this bool value) => value ? "Yes" : "No";

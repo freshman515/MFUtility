@@ -1,13 +1,9 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 /// <summary>
 /// 💎 StringExtensions — 超实用字符串扩展集合。

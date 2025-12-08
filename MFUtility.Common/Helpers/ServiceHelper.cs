@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.Common.Helpers;
 
 /// <summary>
 /// 🌍 全局服务定位器（ServiceProvider 助手）

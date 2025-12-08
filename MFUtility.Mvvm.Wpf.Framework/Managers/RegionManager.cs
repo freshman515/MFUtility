@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MFUtility.Mvvm.Wpf.Managers;
+namespace MFUtility.Mvvm.Wpf.Framework.Managers;
 
 public static class RegionManager {
 	private static readonly Dictionary<string, ContentControl> _regions = new();

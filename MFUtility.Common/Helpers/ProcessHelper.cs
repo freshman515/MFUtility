@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.Common.Helpers;
 
 public static class ProcessHelper {
 	public static void RunCmd(string command, bool asAdmin = false) {

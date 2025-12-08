@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MFUtility.Mvvm.Wpf.Bases {
+namespace MFUtility.Mvvm.Wpf.Framework.Bases {
 	#region RelayCommand（同步命令）
 
 	public class RelayCommand : ICommand {

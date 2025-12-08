@@ -1,5 +1,5 @@
-﻿using MFUtility.Extensions;
-using MFUtility.Mvvm.Wpf;
+﻿using MFUtility.Mvvm.Wpf;
+using MFUtility.Mvvm.Wpf.Framework;
 using MFUtility.Notifications.Services;
 using MFUtility.WPF.Notifications.Services;
 

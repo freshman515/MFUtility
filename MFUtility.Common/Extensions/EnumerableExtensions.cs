@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 public static class EnumerableExtensions {
     #region 🔹 基础迭代与判断

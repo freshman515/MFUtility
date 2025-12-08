@@ -1,4 +1,4 @@
-﻿namespace MFUtility.Extensions;
+﻿namespace MFUtility.Common.Extensions;
 
 public static class NumericExtensions
 {

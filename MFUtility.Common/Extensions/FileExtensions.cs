@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace MFUtility.Extensions;
+﻿namespace MFUtility.Common.Extensions;
 
 public static class FileExtensions
 {

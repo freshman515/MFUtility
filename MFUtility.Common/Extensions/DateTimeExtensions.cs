@@ -1,7 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 public static class DateTimeExtensions
 {

@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 /// <summary>
 /// IoC 容器批量注册 View / ViewModel / Service 的辅助扩展

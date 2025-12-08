@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MFUtility.Logging;
 using MFUtility.Logging.Enums;
 using MFUtility.Mvvm.Wpf;
+using MFUtility.Mvvm.Wpf.Toolkit;
 
 namespace Test4.ViewModels;
 

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Channels;
 using Newtonsoft.Json;
 
-namespace MFUtility.EventBus;
+namespace MFUtility.Bus.Event;
 
 internal sealed class SocketBridge {
 		private readonly string _host;

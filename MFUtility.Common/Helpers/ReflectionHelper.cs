@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.Common.Helpers;
 
 public static class ReflectionHelper {
 	 /// <summary>

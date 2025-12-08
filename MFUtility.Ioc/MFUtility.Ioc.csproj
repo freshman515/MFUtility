@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFrameworks>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>
             net470;
             net471;
             net472;
@@ -9,9 +9,24 @@
             net481;
             net8.0-windows
         </TargetFrameworks>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>10</LangVersion>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>10</LangVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>MF.Utility.Ioc</PackageId>
+    <Authors>Mf</Authors>
+    <Company>Mf Studio</Company>
+    <Product>XMF.Utility</Product>
+    <Description>Ioc框架</Description>
+    <PackageIcon>风车.png</PackageIcon>
+    <Title>Ioc框架</Title>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <Content Include="风车.png" Pack="true" PackagePath="\">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

@@ -1,22 +1,23 @@
-using System;
-using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MFUtility.Ioc;
-using MFUtility.Mvvm.Wpf.Interfaces;
-namespace MFUtility.Mvvm.Wpf;
+using MFUtility.Mvvm.Wpf.ToolKit.Interfaces;
+
+namespace MFUtility.Mvvm.Wpf.Toolkit;
 
 public class ViewModelBase : ObservableObject {
+	private bool _isFirstActivated = true;
+
 	public object? NavigationParameter { get; internal set; }
 	public ViewModelBase? PreviousViewModel { get; internal set; }
 	public virtual string DisplayName {
 		get {
 			var name = GetType().Name;
-	
+
 			// 去掉 ViewModel 后缀
 			if (name.EndsWith("ViewModel"))
 				name = name.Substring(0, name.Length - "ViewModel".Length);
-	
+
 			return name;
 		}
 	}
@@ -29,7 +30,7 @@ public class ViewModelBase : ObservableObject {
 		get {
 			if (_viewRef != null && _viewRef.TryGetTarget(out var v))
 				return v;
-	
+
 			return null;
 		}
 	}
@@ -50,7 +51,7 @@ public class ViewModelBase : ObservableObject {
 	}
 	protected async Task RunBusy(Func<Task> action) {
 		if (IsBusy) return;
-	
+
 		try {
 			IsBusy = true;
 			await action();
@@ -63,15 +64,15 @@ public class ViewModelBase : ObservableObject {
 	/// </summary>
 	public virtual void OnNavigatingTo(object? parameter) {
 	}
-	
+
 	/// <summary>
 	/// 即将离开当前 VM（返回 false 可阻止导航）
 	/// </summary>
 	public virtual bool OnNavigatingFrom() => true;
-	
+
 	public virtual void OnNavigatedTo(object? parameter) {
 	}
-	
+
 	public virtual void OnNavigatedFrom() {
 	}
 	protected void SafeExecute(Action action) {
@@ -92,9 +93,20 @@ public class ViewModelBase : ObservableObject {
 		// 如果这个 VM 没有 RegionName，则无法从导航器获取当前 VM
 		if (string.IsNullOrEmpty(RegionName))
 			return null;
-	
+
 		return Navigator.GetCurrent(RegionName);
 	}
-	
+
 	public TViewModel GetCurrentViewModel<TViewModel>(string region) where TViewModel : class => Navigator.GetCurrent<TViewModel>(region);
+	public virtual void OnActivated() {
+		if (_isFirstActivated) {
+			_isFirstActivated = false;
+			OnFirstActivated();
+		}
+	}
+
+	public virtual void OnDeactivated() {
+	}
+	public virtual void OnFirstActivated() {
+	}
 }

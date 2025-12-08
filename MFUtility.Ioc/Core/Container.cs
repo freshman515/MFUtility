@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using MFUtility.Ioc.Attributes;
 using MFUtility.Ioc.Enums;
 using MFUtility.Ioc.Interfaces;
 using MFUtility.Ioc.Models;
@@ -12,7 +13,6 @@ public class Container : IResolver, IScopeFactory, IDisposable {
 	private static readonly List<IIocAutoModule> _pendingModules = new();
 	private bool _disposed;
 	public Container() {
-		IoC.Default = this;
 		OnContainerCreated?.Invoke(this);
 		LoadModulesFrom(AppDomain.CurrentDomain.GetAssemblies());
 		foreach (var module in _pendingModules) {
@@ -260,6 +260,30 @@ public class Container : IResolver, IScopeFactory, IDisposable {
 			}
 		}
 	}
+	public void AutoRegisterViewModels(
+		Assembly? assembly = null,
+		Lifetime lifetime = Lifetime.Singleton) {
+		assembly ??= Assembly.GetCallingAssembly();
+
+		AutoRegister(
+			assembly,
+			type => type.Name.EndsWith("ViewModel"),
+			lifetime,
+			registerInterfaces: true
+		);
+	}
+	public void AutoRegisterServices(
+		Assembly? assembly = null,
+		Lifetime lifetime = Lifetime.Singleton) {
+		assembly ??= Assembly.GetCallingAssembly();
+
+		AutoRegister(
+			assembly,
+			type => type.Name.EndsWith("Service"),
+			lifetime,
+			registerInterfaces: true
+		);
+	}
 	private bool TryAdd(Type serviceType, Type implType, Lifetime lifetime) {
 		if (_services.ContainsKey(serviceType))
 			return false;
@@ -268,10 +292,42 @@ public class Container : IResolver, IScopeFactory, IDisposable {
 		return true;
 	}
 
+
+	private void InjectProperties(object instance, Scope? scope) {
+		var props = instance.GetType()
+		                    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+		                    .Where(p => p.CanWrite && p.GetCustomAttribute<InjectAttribute>() != null);
+		foreach (var prop in props) {
+			var attr = prop.GetCustomAttribute<InjectAttribute>();
+
+
+			// 1. 使用属性上指定的 Lifetime
+			if (attr?.Lifetime != null) {
+				var service = ResolveInternal(prop.PropertyType, scope, attr.Lifetime.Value);
+				prop.SetValue(instance, service);
+				continue;
+			}
+
+			// 2. 未指定 → 用注册时的生命周期
+			if (_services.TryGetValue(prop.PropertyType, out var descriptor)) {
+				var service = ResolveInternal(prop.PropertyType, scope, descriptor.Lifetime);
+				prop.SetValue(instance, service);
+				continue;
+			}
+
+			// 3. 未注册 → 默认按 Singleton 解析（与当前隐式注册一致）
+			var defaultService = ResolveInternal(prop.PropertyType, scope, Lifetime.Singleton);
+			prop.SetValue(instance, defaultService);
+
+		}
+	}
+
 	#endregion
 
 	#region 解析 API（对外）
 
+	public TService Get<TService>() => Resolve<TService>();
+	public object Get(Type serviceType, Lifetime lifetime = Lifetime.Transient) => Resolve(serviceType, lifetime);
 	public TService Resolve<TService>() {
 		return (TService)Resolve(typeof(TService));
 	}
@@ -364,16 +420,21 @@ public class Container : IResolver, IScopeFactory, IDisposable {
 		}
 
 		var parameters = constructor.GetParameters();
-		if (parameters.Length == 0)
-			return Activator.CreateInstance(implType)!;
+		if (parameters.Length == 0) {
+			var objNoP = Activator.CreateInstance(implType)!;
+			InjectProperties(objNoP, scope);
+			return objNoP;
+		}
 
 		var args = new object[parameters.Length];
 		for (int i = 0; i < parameters.Length; i++) {
 			var pType = parameters[i].ParameterType;
 			args[i] = ResolveInternal(pType, scope);
 		}
+		var obj = Activator.CreateInstance(implType, args)!;
+		InjectProperties(obj, scope);
+		return obj;
 
-		return Activator.CreateInstance(implType, args)!;
 	}
 
 	#endregion

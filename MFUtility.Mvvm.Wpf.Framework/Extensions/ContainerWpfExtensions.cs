@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using MFUtility.Ioc;
 using MFUtility.Ioc.Core;
 using MFUtility.Ioc.Enums;
-using MFUtility.Mvvm.Wpf.Helpers;
-using MFUtility.Mvvm.Wpf.Interfaces;
-using MFUtility.Mvvm.Wpf.Services;
+using MFUtility.Mvvm.Wpf.Framework.Helpers;
 
-namespace MFUtility.Mvvm.Wpf.Extensions;
+namespace MFUtility.Mvvm.Wpf.Framework.Extensions;
 
 public static class ContainerWpfExtensions {
 	private static readonly Dictionary<Type, Type> _viewMap = new();

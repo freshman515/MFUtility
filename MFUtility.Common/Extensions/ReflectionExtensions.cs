@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace MFUtility.Extensions;
+namespace MFUtility.Common.Extensions;
 
 /// <summary>
 /// 🔍 ReflectionExtensions：全功能反射工具扩展类

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace MFUtility.EventBus;
+namespace MFUtility.Bus.Event;
 
 public sealed class EventScope
 {

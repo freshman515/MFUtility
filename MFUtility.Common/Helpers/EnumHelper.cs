@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
-namespace MFUtility.Helpers;
+namespace MFUtility.Common.Helpers;
 
 /// <summary>
 /// 枚举辅助工具类：

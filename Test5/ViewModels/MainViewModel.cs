@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using MFUtility.Mvvm.Wpf;
-using MFUtility.Mvvm.Wpf.Bases;
+using MFUtility.Mvvm.Wpf.Framework;
+using MFUtility.Mvvm.Wpf.Framework.Bases;
 
 namespace Test5.ViewModels {
 	public class MainViewModel:ViewModelBase {

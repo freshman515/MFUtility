@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 
-namespace MFUtility.Mvvm.Wpf.Helpers;
+namespace MFUtility.Mvvm.Wpf.Framework.Helpers;
 
 public static class ViewLocator {
 	public static FrameworkElement ResolveView(object viewModel) {

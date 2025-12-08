@@ -1,9 +1,9 @@
 ﻿using MFUtility.Ioc.Core;
 using MFUtility.Ioc.Interfaces;
-using MFUtility.Mvvm.Wpf.Interfaces;
-using MFUtility.Mvvm.Wpf.Services;
+using MFUtility.Mvvm.Wpf.Framework.Interfaces;
+using MFUtility.Mvvm.Wpf.Framework.Services;
 
-namespace MFUtility.Mvvm.Wpf.Init;
+namespace MFUtility.Mvvm.Wpf.Framework.Init;
 
 public class MvvmWpfModule : IIocAutoModule {
 

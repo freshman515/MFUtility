@@ -4,8 +4,9 @@ using MFUtility.Ioc;
 using MFUtility.Ioc.Enums;
 using MFUtility.Ioc.Interfaces;
 using MFUtility.Mvvm.Wpf.Helpers;
-using MFUtility.Mvvm.Wpf.Interfaces;
 using MFUtility.Mvvm.Wpf.Managers;
+using MFUtility.Mvvm.Wpf.Toolkit;
+using MFUtility.Mvvm.Wpf.ToolKit.Interfaces;
 
 namespace MFUtility.Mvvm.Wpf.Services;
 
@@ -21,6 +22,28 @@ public class NavigationService : INavigator {
 	// ================================
 	public void Navigate<TViewModel>(string region, object? parameter = null, Lifetime lifetime = Lifetime.Singleton) {
 		Navigate(typeof(TViewModel), region, parameter, lifetime);
+	}
+	public void Navigate(string viewModelTypeString, string region, object? parameter = null, Lifetime lifetime = Lifetime.Singleton) {
+		var type = ResolveViewModel(viewModelTypeString);
+		Navigate(type, region, parameter, lifetime);
+	}
+	public static Type? ResolveViewModel(string name) {
+		if (!name.EndsWith("ViewModel"))
+			name += "ViewModel";
+
+		// 查找当前 AppDomain 所有可用类型
+		return AppDomain.CurrentDomain
+		                .GetAssemblies()
+		                .SelectMany(a => a.GetTypes())
+		                .FirstOrDefault(t => t.Name == name);
+	}
+	public bool TryNavigate(string viewModelTypeString, string region, object? parameter = null) {
+		try {
+			Navigate(viewModelTypeString, region, parameter);
+			return true;
+		} catch {
+			return false;
+		}
 	}
 
 	// ================================
@@ -76,7 +99,7 @@ public class NavigationService : INavigator {
 		if (oldVm != null) {
 			oldVm.IsActive = false;
 			oldVm.OnNavigatedFrom();
-
+			oldVm.OnDeactivated();
 			RegionManager.PushToBackStack(region, oldVm);
 		}
 
@@ -90,6 +113,7 @@ public class NavigationService : INavigator {
 		vm.AttachView(view);
 
 		vm.OnNavigatedTo(parameter);
+		vm.OnActivated();
 	}
 	// ================================
 	// TryNavigate
@@ -125,6 +149,7 @@ public class NavigationService : INavigator {
 			oldVm.OnNavigatingFrom();
 			oldVm.OnNavigatedFrom();
 			oldVm.IsActive = false;
+			oldVm.OnDeactivated(); // ⭐ 新增
 		}
 
 		// 从 BackStack 弹出前一个 VM
@@ -142,6 +167,7 @@ public class NavigationService : INavigator {
 		vm.AttachView(view);
 
 		vm.OnNavigatedTo(vm.NavigationParameter);
+		vm.OnActivated();
 	}
 	// ================================
 	// Clear（清空区域）

@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MFUtility.Common\MFUtility.Common.csproj" />
-    <ProjectReference Include="..\MFUtility.EventBus\MFUtility.EventBus.csproj" />
+    <ProjectReference Include="..\MFUtility.Bus\MFUtility.Bus.csproj" />
     <ProjectReference Include="..\MFUtility.Logging\MFUtility.Logging.csproj" />
   </ItemGroup>
   <ItemGroup>

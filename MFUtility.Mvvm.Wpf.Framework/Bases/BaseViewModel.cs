@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace MFUtility.Mvvm.Wpf.Bases {
+namespace MFUtility.Mvvm.Wpf.Framework.Bases {
     public class BaseViewModel : INotifyPropertyChanged {
         // PropertyChanged 事件
         public event PropertyChangedEventHandler PropertyChanged;
