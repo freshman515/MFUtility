@@ -18,7 +18,7 @@ public class FormatOptions {
 	public bool IncludeTaskId { get; set; } = false;
 
 	/// <summary>时间格式（默认：yyyy-MM-dd HH:mm:ss.fff）</summary>
-	public string TimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss.fff";
+	public string TimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
 
 	/// <summary>是否显示标签（如 CLASS:, LINE:）</summary>
 	public bool ShowFieldTag { get; set; } = true;

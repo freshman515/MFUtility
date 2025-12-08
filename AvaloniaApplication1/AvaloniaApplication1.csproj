@@ -27,6 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MFUtility.Bus\MFUtility.Bus.csproj" />
+      <ProjectReference Include="..\MFUtility.Common\MFUtility.Common.csproj" />
+      <ProjectReference Include="..\MFUtility.Logging\MFUtility.Logging.csproj" />
       <ProjectReference Include="..\MFUtility.Mvvm.Avalonia\MFUtility.Mvvm.Avalonia.csproj" />
     </ItemGroup>
 </Project>
