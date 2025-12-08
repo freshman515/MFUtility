@@ -1,7 +1,0 @@
-﻿[2025-12-05 16:11:11] [Info] [Test2] [MainViewModel] [57] Test3
-[2025-12-05 16:11:11] [Error] [Test2] [MainViewModel] [61] 这是一个错误
-Exception:
-  Type    : System.ArgumentException
-  Message : hello using System;
-  Stack   :
-    at Test2.MainViewModel.Test1() in D:\pragma\Utilities\XMFUtility\Test2\MainViewModel.cs:line 59
