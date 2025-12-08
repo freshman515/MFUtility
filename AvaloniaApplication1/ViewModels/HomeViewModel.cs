@@ -11,6 +11,7 @@ public class HomeViewModel : ViewModelBase {
 	}
 	public override void OnFirstActivated() {
 		base.OnFirstActivated();
+		
 		EventBus.Subscribe("Home", args => Console.WriteLine(args[0]));
 	}
 }
