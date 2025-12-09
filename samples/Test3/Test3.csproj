@@ -9,7 +9,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Caliburn.Micro" Version="5.0.258" />
+      <Page Update="Views\MainView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\MFUtility.Configuration\MFUtility.Configuration.csproj" />
+      <ProjectReference Include="..\..\src\MFUtility.Mvvm.Wpf.Toolkit\MFUtility.Mvvm.Wpf.Toolkit.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,9 +3,9 @@
 using System.Diagnostics;
 using System.Xml.Linq;
 
-namespace CommonPublisher;
+namespace NugetPublisher;
 
-internal abstract class CommonPublisher {
+internal abstract class NugetPublisher {
 	public static int Main(string[] args) {
 		try {
 			Console.WriteLine("🚀 NuGet 自动发布工具");
@@ -19,7 +19,6 @@ internal abstract class CommonPublisher {
 				{ 6, @"D:\pragma\Utilities\XMFUtility\src\MFUtility.Ioc\MFUtility.Ioc.csproj" },
 				{ 7, @"D:\pragma\Utilities\XMFUtility\src\MFUtility.Mvvm.Wpf.Framework\MFUtility.Mvvm.Wpf.Framework.csproj" },
 				{ 8, @"D:\pragma\Utilities\XMFUtility\src\MFUtility.Mvvm.Wpf.Toolkit\MFUtility.Mvvm.Wpf.Toolkit.csproj" },
-				{9, @"D:\pragma\Utilities\XMFUtility\src\MFUtility.Configuration\MFUtility.Configuration.csproj" },
 			};
 
 			string? argProject = GetArgValue(args, "-p");

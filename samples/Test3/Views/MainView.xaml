@@ -1,19 +1,12 @@
-﻿<UserControl x:Class="Test3.Views.MainView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Test3.Views"
-             xmlns:cm="http://caliburnmicro.com"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel Margin="20">
-        <TextBlock x:Name="DisplayName" FontSize="18" />
-
-        <!-- 自动绑定 ShowText() -->
-        <Button cm:Message.Attach="[Event Click] = [Action ShowText(123)]"
-                Tag="12" Content="改变标题" />
-        <!-- 自动绑定 SendMessage() -->
-        <Button x:Name="SendMessage" Content="发送消息到 Shell" />
-    </StackPanel>
-</UserControl>
+﻿<Window x:Class="Test3.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Test3"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        
+    </Grid>
+</Window>

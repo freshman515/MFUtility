@@ -355,8 +355,6 @@ public static class StringExtensions {
 		return sb.ToString();
 	}
 
-	public static string JoinWith(this string[] items, string separator = ", ") =>
-		string.Join(separator, items ?? Array.Empty<string>());
 
 	public static string ToSlug(this string value) {
 		if (string.IsNullOrEmpty(value)) return string.Empty;

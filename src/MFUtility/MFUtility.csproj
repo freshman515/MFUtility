@@ -9,7 +9,7 @@
             net48;
             net481;
             net8.0-windows
-        </TargetFrameworks>
+    </TargetFrameworks>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -17,8 +17,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- 包信息 -->
+    <PackageProjectUrl>https://github.com/freshman515/MFUtility</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/freshman515/MFUtility</RepositoryUrl>
     <PackageId>MF.Utility</PackageId>
-    <Version>1.0.63</Version>
+    <Version>1.0.65</Version>
     <Authors>Mf</Authors>
     <Company>Mf Studio</Company>
     <Product>XMF.Utility</Product>

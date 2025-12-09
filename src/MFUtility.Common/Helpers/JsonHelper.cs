@@ -137,6 +137,13 @@ public static class JsonHelper {
 			return default;
 
 		try {
+			// 空文件 → 自动生成默认对象
+			var info = new FileInfo(filePath);
+			if (info.Length == 0) {
+				var newObj = Activator.CreateInstance<T>();
+				Save(filePath, newObj);
+				return newObj;
+			}
 			lock (FileLock) {
 				using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 				using var reader = new StreamReader(fs, Encoding.UTF8);

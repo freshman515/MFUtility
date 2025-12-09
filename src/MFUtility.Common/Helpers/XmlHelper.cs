@@ -32,7 +32,9 @@ public static class XmlHelper {
 			for (int i = 0; i < retryCount; i++) {
 				try {
 					using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read)) {
-						serializer.Serialize(fs, data);
+						var ns = new XmlSerializerNamespaces();
+						ns.Add("", ""); // 清空 namespace
+						serializer.Serialize(fs, data, ns);
 					}
 
 					// ✅ 原子替换
@@ -74,8 +76,11 @@ public static class XmlHelper {
 			try {
 				for (int i = 0; i < retryCount; i++) {
 					try {
-						using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read))
-							serializer.Serialize(fs, data);
+						using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.Read)) {
+							var ns = new XmlSerializerNamespaces();
+							ns.Add("", ""); // 清空 namespace
+							serializer.Serialize(fs, data, ns);
+						}
 
 						if (File.Exists(filePath))
 							File.Replace(tempFile, filePath, filePath + ".bak", true);
@@ -131,11 +136,18 @@ public static class XmlHelper {
 		Action<Exception>? onError = null) {
 		if (!File.Exists(filePath))
 			return default;
-
+		if (new FileInfo(filePath).Length == 0) {
+			var newObj = Activator.CreateInstance<T>();
+			Save(filePath, newObj);
+			return newObj;
+		}
 		var serializer = new XmlSerializer(typeof(T));
+
 
 		lock (FileLock) {
 			try {
+
+
 				using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 				return (T?)serializer.Deserialize(fs);
 			} catch (InvalidOperationException ex) {
